@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path('', views.landing, name='landing'),
+    path('cron-keepalive/', views.cron_keepalive, name='cron_keepalive'),
 ]
