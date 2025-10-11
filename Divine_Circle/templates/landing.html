@@ -1,0 +1,1892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Circle - Live Pooja Services from India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a1628;
+            --secondary: #d4af37;
+            --accent: #1e3a8a;
+            --ivory: #fffff0;
+            --bg-dark: #0f1419;
+            --text-light: #e5e7eb;
+            --gold-light: #f4d03f;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: var(--text-light);
+            background: var(--primary);
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 22, 40, 0.98);
+            backdrop-filter: blur(15px);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: top 0.4s ease;
+            box-shadow: 0 4px 30px rgba(212, 175, 55, 0.1);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        nav.visible {
+            top: 0;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--secondary);
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ivory);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            color: var(--primary);
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.7);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 22, 40, 0.85), rgba(30, 58, 138, 0.75));
+            z-index: 1;
+            transition: background 0.3s ease;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--ivory);
+            z-index: 2;
+            padding: 2rem;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero h1 .gold {
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            font-weight: 300;
+            color: var(--ivory);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        .primary-btn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            color: var(--primary);
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .primary-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.7);
+        }
+
+        .secondary-btn {
+            padding: 1.2rem 3rem;
+            background: transparent;
+            color: var(--ivory);
+            border: 2px solid var(--secondary);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            background: var(--secondary);
+            color: var(--primary);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Floating spiritual elements */
+        .floating-om {
+            position: absolute;
+            font-size: 8rem;
+            color: rgba(212, 175, 55, 0.08);
+            animation: floatSlow 8s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .om-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .om-2 { top: 60%; right: 8%; animation-delay: 2s; }
+        .om-3 { bottom: 15%; left: 10%; animation-delay: 4s; }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.08; }
+            50% { transform: translateY(-40px) rotate(10deg); opacity: 0.12; }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 8rem 5%;
+            background: var(--ivory);
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(244, 208, 63, 0.1));
+            border: 1px solid var(--secondary);
+            border-radius: 50px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-title h2 .gold {
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title p {
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+
+        .steps-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .step-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--secondary), var(--gold-light));
+        }
+
+        .step-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 15px 50px rgba(212, 175, 55, 0.2);
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .step-content p {
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+        .step-number {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .cta-bottom {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .cta-bottom p {
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Why NRIs Choose Us */
+        .why-nris {
+            padding: 8rem 5%;
+            background: linear-gradient(135deg, var(--primary) 0%, #1a2332 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-nris::before {
+            content: '🕉';
+            position: absolute;
+            font-size: 25rem;
+            top: -5rem;
+            right: -8rem;
+            opacity: 0.03;
+            transform: rotate(15deg);
+        }
+
+        .why-nris .section-title h2,
+        .why-nris .section-title p {
+            color: var(--ivory);
+        }
+
+        .why-nris .badge {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(244, 208, 63, 0.15));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(244, 208, 63, 0.05));
+            backdrop-filter: blur(10px);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.2);
+            border-color: var(--secondary);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--ivory);
+        }
+
+        .stat-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+        }
+
+        .testimonial {
+            max-width: 900px;
+            margin: 5rem auto 0;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(244, 208, 63, 0.08));
+            border-radius: 25px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '✨';
+            font-size: 3rem;
+            position: absolute;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .testimonial p {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--ivory);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-location {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        /* Use Cases Section */
+        .use-cases {
+            padding: 8rem 5%;
+            background: var(--ivory);
+        }
+
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .use-case-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            position: relative;
+        }
+
+        .use-case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .use-case-card:hover::before {
+            opacity: 1;
+        }
+
+        .use-case-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(212, 175, 55, 0.25);
+            border-color: var(--secondary);
+        }
+
+        .use-case-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: var(--secondary);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .use-case-card:hover .use-case-image {
+            transform: scale(1.1);
+        }
+
+        .use-case-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, rgba(212, 175, 55, 0.1) 100%);
+        }
+
+        .use-case-image i {
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .use-case-card:hover .use-case-image i {
+            transform: rotate(10deg) scale(1.1);
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.8));
+        }
+
+        .use-case-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .use-case-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            transition: color 0.3s ease;
+        }
+
+        .use-case-card:hover .use-case-content h3 {
+            color: var(--secondary);
+        }
+
+        .use-case-content p {
+            color: #6b7280;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .use-case-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .use-case-content li {
+            padding: 0.5rem 0;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            transform: translateX(0);
+        }
+
+        .use-case-card:hover .use-case-content li {
+            transform: translateX(5px);
+        }
+
+        .use-case-content li i {
+            color: var(--secondary);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .use-case-card:hover .use-case-content li i {
+            transform: scale(1.2);
+        }
+
+        /* Benefits Section */
+        .benefits {
+            padding: 8rem 5%;
+            background: linear-gradient(135deg, var(--primary) 0%, #0d1b2a 100%);
+            position: relative;
+        }
+
+        .benefits::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+        }
+
+        .benefits .section-title h2,
+        .benefits .section-title p {
+            color: var(--ivory);
+        }
+
+        .benefits-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .benefits-visual {
+            position: relative;
+        }
+
+        .benefits-image {
+            width: 100%;
+            height: 500px;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(212, 175, 55, 0.2);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .benefits-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .benefits-list {
+            list-style: none;
+        }
+
+        .benefit-item {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            gap: 1.5rem;
+            align-items: start;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            padding-left: 1rem;
+        }
+
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .benefit-content h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .benefit-content p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+        }
+
+        /* Schedule Section */
+        .schedule {
+            padding: 8rem 5%;
+            background: var(--ivory);
+        }
+
+        .schedule-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .schedule-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(10, 22, 40, 0.1);
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: white;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+        }
+
+        .schedule-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);
+        }
+
+        .info-card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .info-card p {
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+        .help-box {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .help-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .help-box p {
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .help-box a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: block;
+            margin: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .help-box a:hover {
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 8rem 5%;
+            background: linear-gradient(135deg, var(--primary) 0%, #1a2332 100%);
+        }
+
+        .faq .section-title h2,
+        .faq .section-title p {
+            color: var(--ivory);
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(212, 175, 55, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--ivory);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--secondary);
+        }
+
+        .faq-question i {
+            color: var(--secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 2rem 1.5rem;
+            opacity: 1;
+        }
+
+        .faq-answer p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+        }
+
+        .faq-cta {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .faq-cta p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            padding: 0;
+            margin: 0;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .social-links a i {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary), var(--gold-light));
+            z-index: 9999;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease;
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @media (max-width: 968px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .benefits-container,
+            .schedule-container {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo">
+            <i class="fas fa-om"></i>
+            Divine Circle
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#use-cases">Services</a></li>
+            <li><a href="#benefits">Benefits</a></li>
+            <li><a href="#schedule">Book Pooja</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <a href="#schedule" class="cta-button">Book Now</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <img src="https://images.unsplash.com/photo-1604608672516-f1b9b1b85e6f?w=1920&h=1080&fit=crop" alt="Temple" class="hero-video" />
+        <div class="hero-overlay" id="heroOverlay"></div>
+        
+        <i class="fas fa-om floating-om om-1"></i>
+        <i class="fas fa-praying-hands floating-om om-2"></i>
+        <i class="fas fa-dharmachakra floating-om om-3"></i>
+
+        <div class="hero-content">
+            <h1>Sacred Rituals, <span class="gold">Global</span> Reach</h1>
+            <p class="hero-subtitle">Experience authentic Hindu poojas from India, live-streamed to your home anywhere in the world</p>
+            <div class="hero-cta">
+                <button class="primary-btn" onclick="document.getElementById('schedule').scrollIntoView({behavior: 'smooth'})">Schedule a Pooja</button>
+                <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-title fade-in">
+            <span class="badge">Simple & Seamless</span>
+            <h2>How <span class="gold">Divine Circle</span> Works</h2>
+            <p>Experience sacred traditions in just four simple steps</p>
+        </div>
+        <div class="steps-container">
+            <div class="step-card fade-in">
+                <div class="step-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="step-content">
+                    <h3>Choose Your Pooja</h3>
+                    <p>Select from our wide range of ceremonies or request a custom pooja</p>
+                </div>
+                <div class="step-number">1</div>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-icon"><i class="fas fa-comments"></i></div>
+                <div class="step-content">
+                    <h3>Schedule & Consult</h3>
+                    <p>Pick your preferred date and time. Chat with our pandit for personalized guidance</p>
+                </div>
+                <div class="step-number">2</div>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-icon"><i class="fas fa-video"></i></div>
+                <div class="step-content">
+                    <h3>Join Live Ceremony</h3>
+                    <p>Connect via HD video call. Participate in the pooja from anywhere in the world</p>
+                </div>
+                <div class="step-number">3</div>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-icon"><i class="fas fa-gift"></i></div>
+                <div class="step-content">
+                    <h3>Receive Blessings</h3>
+                    <p>Get recorded video, photos, and prasad delivered to your doorstep</p>
+                </div>
+                <div class="step-number">4</div>
+            </div>
+        </div>
+        <div class="cta-bottom">
+            <p>Ready to experience divine blessings?</p>
+            <button class="primary-btn" onclick="document.getElementById('schedule').scrollIntoView({behavior: 'smooth'})">Get Started Today</button>
+        </div>
+    </section>
+
+    <!-- Why NRIs Choose Us -->
+    <section class="why-nris" id="why-nris">
+        <div class="section-title fade-in">
+            <span class="badge">Why NRIs Choose Us</span>
+            <h2>Bridging <span class="gold">Distance</span> with <span class="gold">Devotion</span></h2>
+            <p>Living abroad shouldn't mean leaving your traditions behind. We bring India's sacred heritage to your doorstep.</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card scale-in">
+                <div class="stat-icon"><i class="fas fa-globe-americas"></i></div>
+                <h3>30+ Countries</h3>
+                <h4>No Borders, No Barriers</h4>
+                <p>Access authentic Hindu ceremonies from anywhere in the world. Your location doesn't limit your faith.</p>
+            </div>
+            <div class="stat-card scale-in">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <h3>24/7 Available</h3>
+                <h4>Any Time, Your Time</h4>
+                <p>Schedule poojas according to your convenience across all time zones. We're here when you need us.</p>
+            </div>
+            <div class="stat-card scale-in">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <h3>From $49</h3>
+                <h4>Transparent Pricing</h4>
+                <p>No hidden costs or surprise fees. Know exactly what you're paying for with our upfront pricing.</p>
+            </div>
+            <div class="stat-card scale-in">
+                <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
+                <h3>50+ Pandits</h3>
+                <h4>Expert Pandits</h4>
+                <p>Learned scholars with decades of experience performing traditional Vedic rituals with precision.</p>
+            </div>
+            <div class="stat-card scale-in">
+                <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>5000+ Happy Families</h3>
+                <h4>Quality Assured</h4>
+                <p>Every ceremony is conducted with authenticity and precision. 100% satisfaction guaranteed.</p>
+            </div>
+            <div class="stat-card scale-in">
+                <div class="stat-icon"><i class="fas fa-sliders-h"></i></div>
+                <h3>Fully Customizable</h3>
+                <h4>Personalized Experience</h4>
+                <p>Custom ceremonies tailored to your specific needs, traditions, and family requirements.</p>
+            </div>
+        </div>
+        <div class="testimonial fade-in">
+            <p>"Living in the USA, I thought we'd have to skip our daughter's Namkaran ceremony. Divine Circle made it feel like we were back in India, with our entire family participating via video. Truly divine!"</p>
+            <div class="testimonial-author">Priya Sharma</div>
+            <div class="testimonial-location">San Francisco, USA</div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="use-cases" id="use-cases">
+        <div class="section-title fade-in">
+            <span class="badge">Our Services</span>
+            <h2><span class="gold">Poojas</span> for Every Milestone</h2>
+            <p>Traditional ceremonies for life's important moments</p>
+        </div>
+        <div class="use-cases-grid">
+            <div class="use-case-card fade-in">
+                <div class="use-case-image">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="use-case-content">
+                    <h3>Griha Pravesh (Housewarming)</h3>
+                    <p>Bless your new home with traditional Vastu pooja and invoke positive energies for prosperity and peace.</p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Vastu Shanti for harmony</li>
+                        <li><i class="fas fa-check-circle"></i> Ganesh pooja for obstacles removal</li>
+                        <li><i class="fas fa-check-circle"></i> Lakshmi pooja for prosperity</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="use-case-card fade-in">
+                <div class="use-case-image">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="use-case-content">
+                    <h3>Vehicle Pooja</h3>
+                    <p>Start your new car journey with divine blessings for safety and protection on every road.</p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Navagraha pooja for safe travels</li>
+                        <li><i class="fas fa-check-circle"></i> Hanuman mantra for protection</li>
+                        <li><i class="fas fa-check-circle"></i> Customized for all vehicle types</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="use-case-card fade-in">
+                <div class="use-case-image">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="use-case-content">
+                    <h3>Business Opening</h3>
+                    <p>Launch your venture with Lakshmi and Ganesh pooja for success, growth, and prosperity in business.</p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Muhurat selection for opening</li>
+                        <li><i class="fas fa-check-circle"></i> Wealth and success mantras</li>
+                        <li><i class="fas fa-check-circle"></i> Office/shop Vastu consultation</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="use-case-card fade-in">
+                <div class="use-case-image">
+                    <i class="fas fa-baby"></i>
+                </div>
+                <div class="use-case-content">
+                    <h3>Naming Ceremony (Namkaran)</h3>
+                    <p>Welcome your newborn with traditional rituals and astrologically aligned name selection.</p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Jyotish-based name suggestions</li>
+                        <li><i class="fas fa-check-circle"></i> Blessings for health & wisdom</li>
+                        <li><i class="fas fa-check-circle"></i> Family involvement options</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="use-case-card fade-in">
+                <div class="use-case-image">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="use-case-content">
+                    <h3>Saraswati Pooja</h3>
+                    <p>Seek blessings for education, exams, and new learning endeavors from the goddess of wisdom.</p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Perfect for students abroad</li>
+                        <li><i class="fas fa-check-circle"></i> Exam success mantras</li>
+                        <li><i class="fas fa-check-circle"></i> Career guidance rituals</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="use-case-card fade-in">
+                <div class="use-case-image">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="use-case-content">
+                    <h3>Festival Celebrations</h3>
+                    <p>Don't miss Diwali, Navratri, or any Hindu festival celebrations with authentic rituals from home.</p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> All major Hindu festivals</li>
+                        <li><i class="fas fa-check-circle"></i> Regional variations available</li>
+                        <li><i class="fas fa-check-circle"></i> Community group bookings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="benefits">
+        <div class="section-title fade-in">
+            <span class="badge" style="border-color: var(--secondary); color: var(--secondary);">The Divine Circle Advantage</span>
+            <h2>Why Thousands of <span class="gold">NRIs</span> Trust Us</h2>
+            <p>For their spiritual needs</p>
+        </div>
+        <div class="benefits-container">
+            <div class="benefits-visual fade-in">
+                <div class="benefits-image">
+                    <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnJ5bGI0bjY4NW9xZnp6NXkyZ2J1anBvaDRodjZidzZvZHZ5OG9pZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlN5Y28D9MzzcRy/giphy.gif" alt="Pooja ceremony">
+                </div>
+            </div>
+            <div class="benefits-list">
+                <div class="benefit-item fade-in">
+                    <div class="benefit-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="benefit-content">
+                        <h4>Authentic Experience Abroad</h4>
+                        <p>No need to search for pandits in foreign countries. Connect directly with experienced priests from India's holiest temples and maintain your cultural roots.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-in">
+                    <div class="benefit-icon"><i class="fas fa-clock"></i></div>
+                    <div class="benefit-content">
+                        <h4>Timezone Flexibility</h4>
+                        <p>We work around your schedule. Book ceremonies at times convenient for you, with muhurat calculations adjusted for your location worldwide.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-in">
+                    <div class="benefit-icon"><i class="fas fa-language"></i></div>
+                    <div class="benefit-content">
+                        <h4>Multilingual Support</h4>
+                        <p>Pandits fluent in Hindi, English, Tamil, Telugu, Gujarati, and more. We explain every ritual so you understand its significance.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-in">
+                    <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="benefit-content">
+                        <h4>Verified & Trusted</h4>
+                        <p>All pandits are background-verified with years of experience. Read reviews and ratings from our global community before booking.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-in">
+                    <div class="benefit-icon"><i class="fas fa-heart"></i></div>
+                    <div class="benefit-content">
+                        <h4>Cultural Connection</h4>
+                        <p>Keep your children connected to their heritage with family-friendly explanations and interactive elements during ceremonies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact/Query Section -->
+    <section class="schedule" id="schedule">
+        <div class="section-title fade-in">
+            <span class="badge">Get In Touch</span>
+            <h2>Have <span class="gold">Questions?</span></h2>
+            <p>Fill out the form below and our team will get back to you within 24 hours</p>
+        </div>
+        <div class="schedule-container">
+            <div class="schedule-info">
+                <div class="info-card fade-in">
+                    <div class="info-card-icon"><i class="fas fa-headset"></i></div>
+                    <h4>24/7 Support</h4>
+                    <p>Our support team is available around the clock to answer all your questions about our services and ceremonies.</p>
+                </div>
+                <div class="info-card fade-in">
+                    <div class="info-card-icon"><i class="fas fa-clock"></i></div>
+                    <h4>Quick Response</h4>
+                    <p>We respond to all queries within 24 hours with detailed information tailored to your specific needs.</p>
+                </div>
+                <div class="info-card fade-in">
+                    <div class="info-card-icon"><i class="fas fa-user-check"></i></div>
+                    <h4>Expert Guidance</h4>
+                    <p>Get personalized advice from our experienced team about rituals, muhurtas, and ceremony customization.</p>
+                </div>
+            </div>
+            <div class="schedule-form fade-in">
+                <form id="scheduleForm">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Question *</label>
+                        <textarea id="message" name="message" required placeholder="Ask us anything about our services, pricing, ceremonies, or traditions..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="section-title fade-in">
+            <span class="badge" style="border-color: var(--secondary); color: var(--secondary);">Got Questions?</span>
+            <h2>Frequently Asked <span class="gold">Questions</span></h2>
+            <p>Everything you need to know about our services</p>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>How does a virtual pooja work?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Our pandits perform the ceremony live from temples or sacred locations in India. You join via HD video call and can participate, ask questions, and receive blessings in real-time. The experience is as authentic as being there in person.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>Do I need any materials (samagri) for the pooja?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We provide a complete list of required items before the ceremony. You can either purchase them locally or opt for our samagri delivery service, where we ship everything you need directly to your doorstep. Basic items like flowers, incense, and fruits are typically available locally.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>Are the pandits qualified and experienced?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! All our pandits are background-verified with decades of experience performing traditional Vedic rituals. They come from respected families of priests and are well-versed in Sanskrit, mantras, and ceremonial procedures.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>What if I'm in a different time zone?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We work around your schedule! Our team will coordinate with you to find a suitable time that works for both you and the pandit. We also calculate auspicious muhurtas adjusted for your local timezone.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>How long does a typical pooja take?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>It varies by ceremony. Simple poojas take 30-45 minutes, while elaborate ones like Satyanarayan Katha can take 2-3 hours. We'll inform you of the expected duration when you book.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>Can family members from different locations join?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely! Multiple family members from different countries can join the same ceremony via video call. It's a beautiful way to bring the family together spiritually.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>What happens after the pooja is completed?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>You'll receive a recorded video of the entire ceremony, high-quality photos, and blessed prasad shipped to your address internationally. The recording is yours to keep and share with family.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>Is there a refund policy?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. If you cancel 48 hours before the scheduled time, you'll receive a full refund. Cancellations within 48 hours receive a 50% refund. We also offer rescheduling at no additional cost.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>Can I customize the pooja according to my family traditions?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Definitely! We encourage you to share your family's specific traditions and customs. Our pandits will accommodate regional variations and personal preferences to make the ceremony truly yours.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <span>What payment methods do you accept?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We accept all major credit cards, debit cards, PayPal, and international bank transfers. Payment is secure and processed through encrypted channels.</p>
+                </div>
+            </div>
+        </div>
+        <div class="faq-cta">
+            <p>Still have questions?</p>
+            <button class="primary-btn" onclick="document.getElementById('schedule').scrollIntoView({behavior: 'smooth'})">Contact Our Support Team</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Divine Circle</h3>
+                <p>Bringing the sacred traditions of India to your doorstep, wherever you are in the world.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#home">Home</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#use-cases">Services</a>
+                <a href="#benefits">Why Us</a>
+                <a href="#schedule">Book Now</a>
+                <a href="#faq">FAQ</a>
+            </div>
+            <div class="footer-section">
+                <h3>Popular Poojas</h3>
+                <a href="#">Griha Pravesh</a>
+                <a href="#">Vehicle Pooja</a>
+                <a href="#">Satyanarayan Katha</a>
+                <a href="#">Navratri Celebrations</a>
+                <a href="#">Lakshmi Pooja</a>
+                <a href="#">Namkaran Ceremony</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-envelope"></i> support@divinecircle.com</p>
+                <p><i class="fas fa-phone"></i> +1 (800) 555-PUJA</p>
+                <p><i class="fas fa-clock"></i> Available 24/7</p>
+                <p><i class="fas fa-globe"></i> Serving worldwide</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Divine Circle. All rights reserved. | Connecting devotees globally with sacred traditions.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercentage = (scrollTop / scrollHeight) * 100;
+            scrollProgress.style.width = scrollPercentage + '%';
+        });
+
+        // Navbar show/hide on hover
+        const navbar = document.getElementById('navbar');
+        let navTimeout;
+
+        document.addEventListener('mousemove', (e) => {
+            if (e.clientY < 100) {
+                navbar.classList.add('visible');
+                clearTimeout(navTimeout);
+            } else {
+                navTimeout = setTimeout(() => {
+                    navbar.classList.remove('visible');
+                }, 500);
+            }
+        });
+
+        // Hero overlay opacity change on scroll
+        const heroOverlay = document.getElementById('heroOverlay');
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const maxScroll = 600;
+            const opacity = Math.max(0.75 - (scrolled / maxScroll) * 0.5, 0.25);
+            if (heroOverlay) {
+                heroOverlay.style.background = `linear-gradient(135deg, rgba(10, 22, 40, ${opacity}), rgba(30, 58, 138, ${opacity - 0.1}))`;
+            }
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in, .scale-in').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+                
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('scheduleForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your interest! Our team will contact you within 24 hours to discuss your pooja requirements and finalize the details.');
+            e.target.reset();
+        });
+
+        // Parallax effect for floating Om symbols
+        document.addEventListener('mousemove', (e) => {
+            const oms = document.querySelectorAll('.floating-om');
+            oms.forEach((om, index) => {
+                const speed = (index + 1) * 0.02;
+                const xAxis = (window.innerWidth / 2 - e.pageX) * speed;
+                const yAxis = (window.innerHeight / 2 - e.pageY) * speed;
+                om.style.transform = `translate(${xAxis}px, ${yAxis}px)`;
+            });
+        });
+
+        // Step cards hover effect
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(15px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Stat cards counter animation
+        const animateCounter = (element, target) => {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target + (element.dataset.suffix || '');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + (element.dataset.suffix || '');
+                }
+            }, 30);
+        };
+
+        // Observe stat cards for counter animation
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                    const h3 = entry.target.querySelector('h3');
+                    const text = h3.textContent;
+                    const number = parseInt(text.match(/\d+/)[0]);
+                    const suffix = text.replace(/\d+/, '').trim();
+                    h3.dataset.suffix = suffix;
+                    h3.textContent = '0' + suffix;
+                    animateCounter(h3, number);
+                    entry.target.classList.add('counted');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-card').forEach(card => {
+            statObserver.observe(card);
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.primary-btn, .secondary-btn, .submit-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.5);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Scroll-triggered animations for sections
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            
+            // Parallax for floating Om symbols
+            document.querySelectorAll('.floating-om').forEach((om, index) => {
+                const speed = 0.3 + (index * 0.1);
+                om.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Add glow effect to cards on hover
+        document.querySelectorAll('.stat-card, .use-case-card, .step-card, .info-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 20px 60px rgba(212, 175, 55, 0.3)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '';
+            });
+        });
+
+        // Smooth reveal animation on page load
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Add scroll-based scale effect to hero content
+        window.addEventListener('scroll', () => {
+            const heroContent = document.querySelector('.hero-content');
+            const scrolled = window.pageYOffset;
+            const scale = Math.max(1 - (scrolled / 1000), 0.8);
+            const opacity = Math.max(1 - (scrolled / 500), 0);
+            
+            if (heroContent) {
+                heroContent.style.transform = `scale(${scale})`;
+                heroContent.style.opacity = opacity;
+            }
+        });
+
+        // Add intersection animations for benefit items
+        const benefitObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.benefit-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-30px)';
+            item.style.transition = 'all 0.5s ease';
+            benefitObserver.observe(item);
+        });
+
+        // Dynamic background pattern animation
+        setInterval(() => {
+            const sections = document.querySelectorAll('.why-nris, .benefits');
+            sections.forEach(section => {
+                const before = window.getComputedStyle(section, '::before');
+                if (before) {
+                    section.style.setProperty('--rotate', Math.random() * 360 + 'deg');
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
