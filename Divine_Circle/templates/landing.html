@@ -1154,10 +1154,10 @@
             <li><a href="#how-it-works">How It Works</a></li>
             <li><a href="#use-cases">Services</a></li>
             <li><a href="#benefits">Benefits</a></li>
-            <li><a href="#schedule">Book Pooja</a></li>
+            <li><a href="{% url 'bookings' %}">Book Pooja</a></li>
             <li><a href="#faq">FAQ</a></li>
         </ul>
-        <a href="#schedule" class="cta-button">Book Now</a>
+        <a href="{% url 'bookings' %}" class="cta-button">Book Now</a>
     </nav>
 
     <!-- Hero Section -->
@@ -1173,7 +1173,8 @@
             <h1>Sacred Rituals, <span class="gold">Global</span> Reach</h1>
             <p class="hero-subtitle">Experience authentic Hindu poojas from India, live-streamed to your home anywhere in the world</p>
             <div class="hero-cta">
-                <button class="primary-btn" onclick="document.getElementById('schedule').scrollIntoView({behavior: 'smooth'})">Schedule a Pooja</button>
+                <a href="{% url 'bookings' %}" class="primary-btn">Schedule a Pooja</a>
+
                 <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
             </div>
         </div>
@@ -1222,7 +1223,8 @@
         </div>
         <div class="cta-bottom">
             <p>Ready to experience divine blessings?</p>
-            <button class="primary-btn" onclick="document.getElementById('schedule').scrollIntoView({behavior: 'smooth'})">Get Started Today</button>
+            <a class="primary-btn" href="{% url 'bookings' %}">Get Started Today</a>
+
         </div>
     </section>
 
@@ -1576,7 +1578,7 @@
         </div>
         <div class="faq-cta">
             <p>Still have questions?</p>
-            <button class="primary-btn" onclick="document.getElementById('schedule').scrollIntoView({behavior: 'smooth'})">Contact Our Support Team</button>
+            <a href="#schedule" class="primary-btn" style="text-decoration: none;">Contact Our Support Team</a>
         </div>
     </section>
 
@@ -1599,7 +1601,7 @@
                 <a href="#how-it-works">How It Works</a>
                 <a href="#use-cases">Services</a>
                 <a href="#benefits">Why Us</a>
-                <a href="#schedule">Book Now</a>
+                <a href="{% url 'bookings' %}">Book Now</a>
                 <a href="#faq">FAQ</a>
             </div>
             <div class="footer-section">

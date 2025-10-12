@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-xt&+@d(n0wdbxbvc*1zm_)#(!zk2d-o%m2ttyf!)kfp5m#bvt(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['divine-circle.onrender.com']
+ALLOWED_HOSTS = ['divine-circle.onrender.com','127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Divine_Circle',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book a Pooja - Divine Circle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a1628;
+            --secondary: #d4af37;
+            --accent: #1e3a8a;
+            --ivory: #fffff0;
+            --bg-dark: #0f1419;
+            --text-light: #e5e7eb;
+            --gold-light: #f4d03f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; color: var(--text-light); background: var(--primary); overflow-x: hidden; }
+
+        /* Navbar (same as landing) */
+        nav { position: sticky; top: 0; left: 0; width: 100%; background: rgba(10,22,40,0.98); backdrop-filter: blur(15px); padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 30px rgba(212,175,55,0.1); border-bottom: 1px solid rgba(212,175,55,0.2); }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display:flex; align-items:center; gap:.5rem; }
+        .logo i { color: var(--secondary); filter: drop-shadow(0 0 10px rgba(212,175,55,0.5)); }
+        .nav-links { display:flex; gap:2.5rem; list-style:none; }
+        .nav-links a { text-decoration:none; color: var(--ivory); font-weight:500; font-size:.95rem; transition: all .3s ease; position: relative; }
+        .nav-links a:hover { color: var(--secondary); text-shadow: 0 0 15px rgba(212,175,55,.5); }
+        .nav-links a::after { content:''; position:absolute; bottom:-5px; left:0; width:0; height:2px; background: var(--secondary); transition: width .3s ease; box-shadow: 0 0 10px var(--secondary); }
+        .nav-links a:hover::after { width:100%; }
+        .cta-button { padding:.8rem 2rem; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); color: var(--primary); border:none; border-radius:50px; font-weight:700; text-decoration:none; display:inline-block; box-shadow: 0 0 20px rgba(212,175,55,.4); }
+
+        /* Page header */
+        .page-hero { position: relative; padding: 6rem 5% 3rem; background: linear-gradient(135deg, rgba(10,22,40,0.85), rgba(30,58,138,0.75)); overflow:hidden; }
+        .page-hero h1 { font-family:'Playfair Display',serif; font-size:3rem; margin-bottom:.75rem; }
+        .page-hero h1 .gold { background: linear-gradient(135deg,var(--secondary),var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 30px rgba(212,175,55,.3); }
+        .page-hero p { color: rgba(255,255,255,.9); }
+
+        /* Calendar Section */
+        .calendar-wrap { max-width: 1100px; margin: 2rem auto 4rem; padding: 0 5%; }
+        .cal-card { background: #0f1b2e; border:1px solid rgba(212,175,55,0.2); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow:hidden; }
+        .cal-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid rgba(212,175,55,0.15); background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(244,208,63,0.08)); }
+        .cal-title { display:flex; align-items:center; gap: .75rem; }
+        .cal-title h2 { font-size:1.4rem; }
+        .cal-controls { display:flex; align-items:center; gap:.5rem; }
+        .icon-btn { width:38px; height:38px; display:flex; align-items:center; justify-content:center; border-radius:10px; border:1px solid rgba(212,175,55,0.3); background: transparent; color: var(--ivory); cursor:pointer; transition:.2s; }
+        .icon-btn:hover { background: rgba(212,175,55,0.15); }
+        .today-btn { padding:.55rem .9rem; border-radius:10px; border:1px solid rgba(212,175,55,0.3); background: transparent; color: var(--ivory); cursor:pointer; }
+
+        .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap: .5rem; padding: 1rem; }
+        .dow { text-align:center; color: rgba(255,255,255,.7); font-weight:600; padding:.25rem 0 .5rem; }
+        .day { position:relative; min-height: 92px; background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:.5rem; color:#dbe4ff; transition:.2s; display:flex; flex-direction:column; }
+        .day.muted { opacity:.45; }
+        .day:hover { transform: translateY(-2px); box-shadow:0 10px 25px rgba(212,175,55,.15); border-color: rgba(212,175,55,.25); }
+        .day-number { font-weight:700; font-size:.95rem; margin-bottom:.35rem; }
+        .event-indicator { margin-top:auto; display:flex; align-items:center; gap:.35rem; color: var(--secondary); font-weight:700; }
+        .event-indicator i { filter: drop-shadow(0 0 8px rgba(212,175,55,.6)); }
+        .highlight { outline: 2px solid rgba(212,175,55,0.5); box-shadow: inset 0 0 0 2px rgba(212,175,55,0.3); }
+
+        /* Modals */
+        .modal-backdrop { position:fixed; inset:0; background: rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index: 2000; }
+        .modal { width: min(95vw, 720px); max-height: 90vh; background: #0f1b2e; border:1px solid rgba(212,175,55,0.25); border-radius:18px; box-shadow: 0 25px 80px rgba(0,0,0,.35); overflow:hidden; display:flex; flex-direction:column; }
+        .modal-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid rgba(212,175,55,0.15); background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(244,208,63,0.08)); }
+        .modal-body { padding: 1rem 1.25rem; flex: 1 1 auto; overflow: hidden; }
+        .close-btn { background: transparent; border:none; color: var(--ivory); font-size:1.25rem; cursor:pointer; }
+
+        .event-item { border:1px solid rgba(212,175,55,0.15); border-radius:14px; padding:1rem; margin:.75rem 0; background: rgba(255,255,255,0.03); }
+        .event-item h4 { margin-bottom:.25rem; font-size:1.1rem; }
+        .event-meta { color: rgba(255,255,255,.7); font-size:.9rem; margin-bottom:.5rem; }
+        .gold-btn { padding:.6rem 1rem; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); border:none; border-radius:10px; color:#0b1220; font-weight:800; cursor:pointer; box-shadow:0 10px 25px rgba(212,175,55,.35); }
+        .event-content { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-height: 55vh; }
+        .event-col { overflow: auto; padding-right: .5rem; }
+        .event-col::-webkit-scrollbar { width: 0; height: 0; }
+        .event-col { scrollbar-width: none; -ms-overflow-style: none; }
+        .event-col h5 { margin-bottom:.35rem; font-size: .95rem; color: var(--ivory); }
+        .samagri-list { padding-left: 1.1rem; }
+        .samagri-list li { margin: .25rem 0; color: rgba(255,255,255,.9); }
+        .event-indicator { display:flex; align-items:center; gap:.35rem; color: var(--secondary); font-weight:700; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        /* Hide modal body scrollbar as well for a cleaner look, while preserving scroll via wheel/touch */
+        .modal-body::-webkit-scrollbar { width: 0; height: 0; }
+        .modal-body { scrollbar-width: none; -ms-overflow-style: none; }
+        @media (max-width: 768px) {
+            .event-content { grid-template-columns: 1fr; max-height: 50vh; }
+        }
+
+        /* Booking form */
+        .form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:1rem; }
+        .form-grid .full { grid-column: 1 / -1; }
+        label { display:block; margin-bottom:.35rem; color: var(--ivory); font-weight:600; font-size:.9rem; }
+        input, textarea { width:100%; padding:.8rem 1rem; border-radius:12px; border:2px solid rgba(255,255,255,0.08); background:#0b1220; color: var(--ivory); font-family:'Poppins',sans-serif; }
+        textarea { min-height:110px; resize:vertical; }
+        .muted { color: rgba(255,255,255,.7); font-size:.95rem; }
+
+        /* Footer (same as landing) */
+        footer { background: var(--bg-dark); color: rgba(255,255,255,0.8); padding: 3rem 5% 2rem; border-top: 1px solid rgba(212,175,55,0.2); margin-top: 3rem; }
+        .footer-content { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; max-width: 1400px; margin: 0 auto 2rem; }
+        .footer-section h3 { font-family:'Playfair Display',serif; margin-bottom:1.5rem; background: linear-gradient(135deg,var(--secondary),var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .footer-section a, .footer-section p { color: rgba(255,255,255,.6); line-height:1.8; text-decoration:none; display:block; margin-bottom:.5rem; }
+        .social-links { display:flex; gap:1rem; }
+        .social-links a { width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg,var(--secondary),var(--gold-light)); display:flex; align-items:center; justify-content:center; }
+
+        @media (max-width: 968px) { .nav-links { display:none; } .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><i class="fas fa-om"></i> Divine Circle</div>
+        <ul class="nav-links">
+            <li><a href="{% url 'landing' %}#home">Home</a></li>
+            <li><a href="{% url 'landing' %}#how-it-works">How It Works</a></li>
+            <li><a href="{% url 'landing' %}#use-cases">Services</a></li>
+            <li><a href="{% url 'landing' %}#benefits">Benefits</a></li>
+            <li><a href="{% url 'bookings' %}">Book Pooja</a></li>
+            <li><a href="{% url 'landing' %}#faq">FAQ</a></li>
+        </ul>
+        <a href="{% url 'bookings' %}" class="cta-button">Book Now</a>
+    </nav>
+
+    <section class="page-hero">
+        <h1>Find an Auspicious <span class="gold">Pooja Date</span></h1>
+        <p>Explore our monthly calendar. Golden dates with the 🕉 symbol have scheduled poojas. Click a date to see details and book instantly.</p>
+    </section>
+
+    <section class="calendar-wrap">
+        <div class="cal-card">
+            <div class="cal-header">
+                <div class="cal-title">
+                    <i class="fas fa-calendar-alt" style="color:var(--secondary);"></i>
+                    <h2 id="calTitle">Month YYYY</h2>
+                </div>
+                <div class="cal-controls">
+                    <button id="prevBtn" class="icon-btn" title="Previous Month"><i class="fas fa-chevron-left"></i></button>
+                    <button id="todayBtn" class="today-btn">Today</button>
+                    <button id="nextBtn" class="icon-btn" title="Next Month"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div class="cal-grid" id="calGrid">
+                <!-- Days of Week -->
+            </div>
+        </div>
+        <p class="muted" style="margin-top:.75rem; display:flex; align-items:center; gap:.4rem;"><span class="event-indicator"><i class="fas fa-om"></i> Event title shown on dates with poojas</span></p>
+    </section>
+
+    <!-- Events Modal -->
+    <div class="modal-backdrop" id="eventsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="eventsModalTitle">Poojas on DATE</h3>
+                <button class="close-btn" onclick="closeEventsModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="eventsList">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal-backdrop" id="bookingModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="bookingModalTitle">Book Pooja</h3>
+                <button class="close-btn" onclick="closeBookingModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="bookingForm">
+                    <input type="hidden" id="event_id" name="event_id" />
+                    <div class="form-grid">
+                        <div>
+                            <label for="name">Full Name *</label>
+                            <input id="name" name="name" required placeholder="Your full name" />
+                        </div>
+                        <div>
+                            <label for="phone">Phone</label>
+                            <input id="phone" name="phone" placeholder="Your phone" />
+                        </div>
+                        <div>
+                            <label for="currency">Currency</label>
+                            <select id="currency" name="currency" style="width:100%; padding:.8rem 1rem; border-radius:12px; border:2px solid rgba(255,255,255,0.08); background:#0b1220; color: var(--ivory);">
+                                <option value="USD" selected>USD ($30)</option>
+                                <option value="INR">INR (≈ $30)</option>
+                                <option value="EUR">EUR (≈ $30)</option>
+                                <option value="GBP">GBP (≈ $30)</option>
+                                <option value="AUD">AUD (≈ $30)</option>
+                                <option value="CAD">CAD (≈ $30)</option>
+                                <option value="SGD">SGD (≈ $30)</option>
+                                <option value="AED">AED (≈ $30)</option>
+                            </select>
+                        </div>
+                        <div class="full">
+                            <label for="email">Email *</label>
+                            <input id="email" type="email" name="email" required placeholder="your.email@example.com" />
+                        </div>
+                        <div class="full">
+                            <p class="muted"><i class="fas fa-info-circle"></i> We will send the meeting link and all relevant details to your WhatsApp and email after successful payment.</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:.6rem; margin-top:1rem;">
+                        <button type="button" class="icon-btn" onclick="closeBookingModal()">Cancel</button>
+                        <button type="submit" class="gold-btn">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Divine Circle</h3>
+                <p>Bringing the sacred traditions of India to your doorstep, wherever you are in the world.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="{% url 'landing' %}#home">Home</a>
+                <a href="{% url 'landing' %}#how-it-works">How It Works</a>
+                <a href="{% url 'landing' %}#use-cases">Services</a>
+                <a href="{% url 'landing' %}#benefits">Why Us</a>
+                <a href="{% url 'bookings' %}">Book Now</a>
+                <a href="{% url 'landing' %}#faq">FAQ</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-envelope"></i> support@divinecircle.com</p>
+                <p><i class="fas fa-phone"></i> +1 (800) 555-PUJA</p>
+                <p><i class="fas fa-clock"></i> Available 24/7</p>
+                <p><i class="fas fa-globe"></i> Serving worldwide</p>
+            </div>
+        </div>
+        <div style="text-align:center; color: rgba(255,255,255,.5);">&copy; 2025 Divine Circle. All rights reserved.</div>
+    </footer>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // Utilities
+        const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]; 
+        function pad(n){ return (n<10?"0":"") + n; }
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Calendar state
+        let current = new Date();
+        current.setDate(1);
+        let eventsIndex = {}; // date(YYYY-MM-DD) -> [events]
+
+        const calTitle = document.getElementById('calTitle');
+        const calGrid = document.getElementById('calGrid');
+        const eventsModal = document.getElementById('eventsModal');
+        const eventsList = document.getElementById('eventsList');
+        const eventsModalTitle = document.getElementById('eventsModalTitle');
+        const bookingModal = document.getElementById('bookingModal');
+
+        // Build DOW header
+        function renderDOW(){
+            const dows = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            calGrid.innerHTML = dows.map(d => `<div class="dow">${d}</div>`).join('');
+        }
+
+        // Fetch events for visible month
+        async function loadMonthEvents(){
+            const year = current.getFullYear();
+            const month = current.getMonth()+1; // 1-12
+            const res = await fetch(`/api/events/?year=${year}&month=${month}`);
+            const data = await res.json();
+            eventsIndex = {};
+            (data.events || []).forEach(ev => {
+                if(!eventsIndex[ev.date]) eventsIndex[ev.date] = [];
+                eventsIndex[ev.date].push(ev);
+            });
+        }
+
+        function hasEvents(dateObj){
+            const key = `${dateObj.getFullYear()}-${pad(dateObj.getMonth()+1)}-${pad(dateObj.getDate())}`;
+            return !!eventsIndex[key];
+        }
+
+        function dayCell(dateObj, muted){
+            const dayNum = dateObj.getDate();
+            const key = `${dateObj.getFullYear()}-${pad(dateObj.getMonth()+1)}-${pad(dateObj.getDate())}`;
+            const showEvents = hasEvents(dateObj);
+            const highlight = showEvents ? ' highlight' : '';
+            const titles = showEvents ? (eventsIndex[key] || []).map(ev => ev.title).filter(Boolean) : [];
+            const indicator = showEvents ? `<div class="event-indicator" title="${titles.join(', ')}"><i class="fas fa-om"></i> ${titles[0] || 'Pooja'}${titles.length>1 ? ` +${titles.length-1} more` : ''}</div>` : '';
+            return `<button class="day${muted?' muted':''}${highlight}" data-date="${key}" aria-label="${key}">
+                        <div class="day-number">${dayNum}</div>
+                        ${indicator}
+                    </button>`;
+        }
+
+        function renderCalendar(){
+            const y = current.getFullYear();
+            const m = current.getMonth();
+            calTitle.textContent = `${MONTHS[m]} ${y}`;
+
+            renderDOW();
+
+            const firstDay = new Date(y, m, 1);
+            const startWeekday = firstDay.getDay();
+            const daysInMonth = new Date(y, m+1, 0).getDate();
+
+            // previous month's trailing days
+            const prevDays = startWeekday;
+            const prevMonthLastDate = new Date(y, m, 0).getDate();
+            for(let i=prevDays; i>0; i--){
+                const d = new Date(y, m-1, prevMonthLastDate - i + 1);
+                calGrid.insertAdjacentHTML('beforeend', dayCell(d, true));
+            }
+            // current month
+            for(let d=1; d<=daysInMonth; d++){
+                const date = new Date(y, m, d);
+                calGrid.insertAdjacentHTML('beforeend', dayCell(date, false));
+            }
+            // next month's leading days to complete weeks
+            const filled = 7 + prevDays + daysInMonth; // 7 DOW + days
+            const remainder = filled % 7;
+            const nextFill = remainder === 0 ? 0 : (7 - remainder);
+            for(let i=1; i<=nextFill; i++){
+                const d = new Date(y, m+1, i);
+                calGrid.insertAdjacentHTML('beforeend', dayCell(d, true));
+            }
+
+            // add click listeners
+            calGrid.querySelectorAll('.day').forEach(btn => {
+                btn.addEventListener('click', () => openEventsModal(btn.dataset.date));
+            });
+        }
+
+        async function refresh(){
+            calGrid.innerHTML = '';
+            await loadMonthEvents();
+            renderCalendar();
+        }
+
+        // Modal controls
+        async function openEventsModal(dateStr){
+            eventsModalTitle.textContent = `Poojas on ${dateStr}`;
+            eventsList.innerHTML = '<p class="muted">Loading...</p>';
+            eventsModal.style.display = 'flex';
+            const res = await fetch(`/api/events/${dateStr}/`);
+            const data = await res.json();
+            const evs = data.events || [];
+            if(evs.length === 0){
+                eventsList.innerHTML = '<p class="muted">No poojas scheduled for this date.</p>';
+                return;
+            }
+            eventsList.innerHTML = evs.map(e => `
+                <div class="event-item">
+                    <h4>${e.title}</h4>
+                    <div class="event-meta"><i class="fas fa-clock"></i> ${e.start_time || ''}${e.end_time? ' - ' + e.end_time : ''} &nbsp; | &nbsp; <i class="fas fa-fire"></i> ${e.pooja_type}</div>
+                    <div class="event-content">
+                        <div class="event-col">
+                            <h5>Description</h5>
+                            ${e.description ? `<p style="color: rgba(255,255,255,.9)">${e.description}</p>`: '<p class="muted">No description available.</p>'}
+                        </div>
+                        <div class="event-col">
+                            <h5>Samagri</h5>
+                            ${e.samagri ? `<ul class="samagri-list">${(e.samagri||'').split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>` : '<p class="muted">Not specified.</p>'}
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; margin-top:.75rem;">
+                        <button class="gold-btn" onclick="openBookingModal(${e.id}, '${dateStr}', '${(e.title||'').replace(/'/g,"&apos;")}')">Book this pooja</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        function closeEventsModal(){ eventsModal.style.display = 'none'; }
+
+        function openBookingModal(eventId, dateStr, title){
+            document.getElementById('event_id').value = eventId;
+            document.getElementById('bookingModalTitle').textContent = `Book: ${title} (${dateStr})`;
+            bookingModal.style.display = 'flex';
+        }
+        function closeBookingModal(){ bookingModal.style.display = 'none'; }
+
+        // Booking submit with Razorpay payment flow
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                event_id: document.getElementById('event_id').value || null,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                currency: (document.getElementById('currency')?.value || 'USD')
+                // amount_paise: 50000, // optional; backend defaults if not provided
+                // currency: 'INR'
+            };
+
+            // 1) Create order and provisional booking
+            const orderRes = await fetch('/api/payments/razorpay/order/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if(!orderRes.ok){
+                const err = await orderRes.json().catch(()=>({error:'Failed to create order'}));
+                alert('Could not start payment: ' + (err.error || 'Please try again.'));
+                return;
+            }
+            const orderData = await orderRes.json();
+
+            // 2) Open Razorpay Checkout
+            const options = {
+                key: orderData.key_id,
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: 'Divine Circle',
+                description: orderData.display?.description || 'Pooja Booking',
+                order_id: orderData.order_id,
+                prefill: orderData.customer || {},
+                notes: orderData.notes || {},
+                theme: { color: '#d4af37' },
+                handler: async function (response) {
+                    // 3) Verify payment on server
+                    const verifyRes = await fetch('/api/payments/razorpay/verify/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            booking_id: orderData.booking_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                        })
+                    });
+                    if(verifyRes.ok){
+                        closeBookingModal();
+                        closeEventsModal();
+                        alert('Payment successful! Your booking is confirmed.');
+                    } else {
+                        const err = await verifyRes.json().catch(()=>({error:'Verification failed'}));
+                        alert('Payment verification failed: ' + (err.error || 'Please contact support.'));
+                    }
+                },
+                modal: {
+                    ondismiss: function(){
+                        // User closed the payment modal
+                    }
+                }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        });
+
+        // Controls
+        document.getElementById('prevBtn').addEventListener('click', async () => { current.setMonth(current.getMonth()-1); await refresh(); });
+        document.getElementById('nextBtn').addEventListener('click', async () => { current.setMonth(current.getMonth()+1); await refresh(); });
+        document.getElementById('todayBtn').addEventListener('click', async () => { const now = new Date(); current = new Date(now.getFullYear(), now.getMonth(), 1); await refresh(); });
+
+        // Init
+        (async function(){ await refresh(); })();
+    </script>
+</body>
+</html>
