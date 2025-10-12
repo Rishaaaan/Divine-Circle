@@ -166,8 +166,8 @@ def create_razorpay_order(request):
         currency=currency,
     )
 
-    key_id = "rzp_test_RS9J9ggdkOFrEm" #os.environ.get("RAZORPAY_KEY_ID")
-    key_secret = "Y8j4FuDSakAActc8BjBLnxri" #os.environ.get("RAZORPAY_KEY_SECRET")
+    key_id = os.environ.get("RAZORPAY_KEY_ID")
+    key_secret = os.environ.get("RAZORPAY_KEY_SECRET")
     if not key_id or not key_secret:
         return JsonResponse({"error": "Razorpay keys not configured"}, status=500)
 
