@@ -8,6 +8,6 @@ urlpatterns = [
     path('api/events/', views.events_by_month, name='events_by_month'),
     path('api/events/<str:date>/', views.events_by_date, name='events_by_date'),
     path('api/bookings/', views.create_booking, name='create_booking'),
-    path('api/payments/razorpay/order/', views.create_razorpay_order, name='create_razorpay_order'),
-    path('api/payments/razorpay/verify/', views.verify_razorpay_payment, name='verify_razorpay_payment'),
+    path('api/payments/paypal/order/', views.create_paypal_order, name='create_paypal_order'),
+    path('api/payments/paypal/capture/', views.capture_paypal_order, name='capture_paypal_order'),
 ]

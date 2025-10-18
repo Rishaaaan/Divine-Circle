@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Book a Pooja - Divine Circle</title>
+    <title>Book a Pooja - Circle Divine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -68,8 +68,8 @@
         .event-item h4 { margin-bottom:.25rem; font-size:1.1rem; }
         .event-meta { color: rgba(255,255,255,.7); font-size:.9rem; margin-bottom:.5rem; }
         .gold-btn { padding:.6rem 1rem; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); border:none; border-radius:10px; color:#0b1220; font-weight:800; cursor:pointer; box-shadow:0 10px 25px rgba(212,175,55,.35); }
-        .event-content { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-height: 55vh; }
-        .event-col { overflow: auto; padding-right: .5rem; }
+        .event-content { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-height: 55vh; overflow: hidden; }
+        .event-col { overflow: auto; padding-right: .5rem; max-height: 55vh; -webkit-overflow-scrolling: touch; }
         .event-col::-webkit-scrollbar { width: 0; height: 0; }
         .event-col { scrollbar-width: none; -ms-overflow-style: none; }
         .event-col h5 { margin-bottom:.35rem; font-size: .95rem; color: var(--ivory); }
@@ -81,6 +81,7 @@
         .modal-body { scrollbar-width: none; -ms-overflow-style: none; }
         @media (max-width: 768px) {
             .event-content { grid-template-columns: 1fr; max-height: 50vh; }
+            .event-col { max-height: 50vh; }
         }
 
         /* Booking form */
@@ -104,7 +105,7 @@
 </head>
 <body>
     <nav>
-        <div class="logo"><i class="fas fa-om"></i> Divine Circle</div>
+        <div class="logo"><i class="fas fa-om"></i> Circle Divine</div>
         <ul class="nav-links">
             <li><a href="{% url 'landing' %}#home">Home</a></li>
             <li><a href="{% url 'landing' %}#how-it-works">How It Works</a></li>
@@ -199,6 +200,7 @@
                         <button type="submit" class="gold-btn">Confirm Booking</button>
                     </div>
                 </form>
+                <div id="paypal-button-container" style="display:none; margin-top: 1rem;"></div>
             </div>
         </div>
     </div>
@@ -206,7 +208,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>Divine Circle</h3>
+                <h3>Circle Divine</h3>
                 <p>Bringing the sacred traditions of India to your doorstep, wherever you are in the world.</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -226,15 +228,15 @@
             </div>
             <div class="footer-section">
                 <h3>Contact Info</h3>
-                <p><i class="fas fa-envelope"></i> support@divinecircle.com</p>
+                <p><i class="fas fa-envelope"></i> support@circledivine.com</p>
                 <p><i class="fas fa-phone"></i> +1 (800) 555-PUJA</p>
                 <p><i class="fas fa-clock"></i> Available 24/7</p>
                 <p><i class="fas fa-globe"></i> Serving worldwide</p>
             </div>
         </div>
-        <div style="text-align:center; color: rgba(255,255,255,.5);">&copy; 2025 Divine Circle. All rights reserved.</div>
+        <div style="text-align:center; color: rgba(255,255,255,.5);">&copy; 2025 Circle Divine. All rights reserved.</div>
     </footer>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&intent=capture"></script>
     <script>
         // Utilities
         const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]; 
@@ -249,6 +251,8 @@
         let current = new Date();
         current.setDate(1);
         let eventsIndex = {}; // date(YYYY-MM-DD) -> [events]
+        let remainingMap = {}; // date -> remaining slots
+        let currentSelectedSlotId = null; // selected slot id for booking
 
         const calTitle = document.getElementById('calTitle');
         const calGrid = document.getElementById('calGrid');
@@ -267,13 +271,23 @@
         async function loadMonthEvents(){
             const year = current.getFullYear();
             const month = current.getMonth()+1; // 1-12
-            const res = await fetch(`/api/events/?year=${year}&month=${month}`);
-            const data = await res.json();
             eventsIndex = {};
-            (data.events || []).forEach(ev => {
-                if(!eventsIndex[ev.date]) eventsIndex[ev.date] = [];
-                eventsIndex[ev.date].push(ev);
-            });
+            remainingMap = {};
+            try {
+                const res = await fetch(`/api/events/?year=${year}&month=${month}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                remainingMap = data.remaining_per_date || {};
+                (data.events || []).forEach(ev => {
+                    if(!eventsIndex[ev.date]) eventsIndex[ev.date] = [];
+                    eventsIndex[ev.date].push(ev);
+                });
+            } catch (err) {
+                console.warn('Failed to load events for month', {year, month, err});
+                // Render calendar without events to avoid blank UI
+                eventsIndex = {};
+                remainingMap = {};
+            }
         }
 
         function hasEvents(dateObj){
@@ -287,7 +301,9 @@
             const showEvents = hasEvents(dateObj);
             const highlight = showEvents ? ' highlight' : '';
             const titles = showEvents ? (eventsIndex[key] || []).map(ev => ev.title).filter(Boolean) : [];
-            const indicator = showEvents ? `<div class="event-indicator" title="${titles.join(', ')}"><i class="fas fa-om"></i> ${titles[0] || 'Pooja'}${titles.length>1 ? ` +${titles.length-1} more` : ''}</div>` : '';
+            const left = remainingMap[key] || 0;
+            const leftText = showEvents ? `<div style="font-size:.75rem; color:${left>0?'#d4af37':'#ff6b6b'}; margin-top:.25rem;">${left>0?`Only ${left} slots left`:'Fully booked'}</div>` : '';
+            const indicator = showEvents ? `<div class="event-indicator" title="${titles.join(', ')}"><i class="fas fa-om"></i> ${titles[0] || 'Pooja'}${titles.length>1 ? ` +${titles.length-1} more` : ''}</div>${leftText}` : '';
             return `<button class="day${muted?' muted':''}${highlight}" data-date="${key}" aria-label="${key}">
                         <div class="day-number">${dayNum}</div>
                         ${indicator}
@@ -358,6 +374,16 @@
                         <div class="event-col">
                             <h5>Description</h5>
                             ${e.description ? `<p style="color: rgba(255,255,255,.9)">${e.description}</p>`: '<p class="muted">No description available.</p>'}
+                            ${(e.slots && e.slots.length) ? `<div style="margin-top:.5rem;"><h5>Available Slots</h5>
+                                <div style="display:flex; flex-direction:column; gap:.35rem;">
+                                    ${e.slots.map(s => `
+                                        <label style="display:flex; align-items:center; gap:.5rem;">
+                                            <input type="radio" name="slot_${e.id}" value="${s.id}" ${s.remaining>0?'':'disabled'} />
+                                            <span>${s.start_time}${s.end_time? ' - '+s.end_time:''} — ${s.remaining>0? `${s.remaining} left` : 'Fully booked'}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            </div>` : '<p class="muted" style="margin-top:.5rem;">No slots configured for this event.</p>'}
                         </div>
                         <div class="event-col">
                             <h5>Samagri</h5>
@@ -365,7 +391,12 @@
                         </div>
                     </div>
                     <div style="display:flex; justify-content:flex-end; margin-top:.75rem;">
-                        <button class="gold-btn" onclick="openBookingModal(${e.id}, '${dateStr}', '${(e.title||'').replace(/'/g,"&apos;")}')">Book this pooja</button>
+                        <button class="gold-btn" onclick="(function(){
+                            const picked = document.querySelector('input[name=slot_${e.id}]:checked');
+                            if(!picked){ alert('Please select a slot for this event first.'); return; }
+                            currentSelectedSlotId = picked.value; 
+                            openBookingModal(${e.id}, '${dateStr}', '${(e.title||'').replace(/'/g,"&apos;")}');
+                        })()">Book this pooja</button>
                     </div>
                 </div>
             `).join('');
@@ -379,7 +410,7 @@
         }
         function closeBookingModal(){ bookingModal.style.display = 'none'; }
 
-        // Booking submit with Razorpay payment flow
+        // Booking submit with PayPal payment flow
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -391,9 +422,9 @@
                 // amount_paise: 50000, // optional; backend defaults if not provided
                 // currency: 'INR'
             };
+            if (currentSelectedSlotId) { payload.slot_id = currentSelectedSlotId; }
 
-            // 1) Create order and provisional booking
-            const orderRes = await fetch('/api/payments/razorpay/order/', {
+            const orderRes = await fetch('/api/payments/paypal/order/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -405,55 +436,49 @@
             }
             const orderData = await orderRes.json();
 
-            // 2) Open Razorpay Checkout
-            const options = {
-                key: orderData.key_id,
-                amount: orderData.amount,
-                currency: orderData.currency,
-                name: 'Divine Circle',
-                description: orderData.display?.description || 'Pooja Booking',
-                order_id: orderData.order_id,
-                prefill: orderData.customer || {},
-                notes: orderData.notes || {},
-                theme: { color: '#d4af37' },
-                handler: async function (response) {
-                    // 3) Verify payment on server
-                    const verifyRes = await fetch('/api/payments/razorpay/verify/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            booking_id: orderData.booking_id,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_signature: response.razorpay_signature,
-                        })
-                    });
-                    if(verifyRes.ok){
-                        closeBookingModal();
-                        closeEventsModal();
-                        alert('Payment successful! Your booking is confirmed.');
-                    } else {
-                        const err = await verifyRes.json().catch(()=>({error:'Verification failed'}));
-                        alert('Payment verification failed: ' + (err.error || 'Please contact support.'));
-                    }
-                },
-                modal: {
-                    ondismiss: function(){
-                        // User closed the payment modal
-                    }
+            const container = document.getElementById('paypal-button-container');
+            if (container) {
+                container.style.display = 'block';
+                container.innerHTML = '';
+                try {
+                    await paypal.Buttons({
+                        createOrder: () => orderData.order_id,
+                        onApprove: async (data, actions) => {
+                            const captureRes = await fetch('/api/payments/paypal/capture/', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    booking_id: orderData.booking_id,
+                                    order_id: data.orderID
+                                })
+                            });
+                            if (captureRes.ok) {
+                                closeBookingModal();
+                                closeEventsModal();
+                                alert('Payment successful! Your booking is confirmed.');
+                            } else {
+                                const err = await captureRes.json().catch(()=>({error:'Capture failed'}));
+                                alert('Payment capture failed: ' + (err.error || 'Please contact support.'));
+                            }
+                        },
+                        onCancel: () => {
+                        },
+                        onError: (err) => {
+                            alert('Payment failed to start.');
+                        }
+                    }).render('#paypal-button-container');
+                } catch (e) {
+                    alert('Could not render PayPal buttons.');
                 }
-            };
-            const rzp = new Razorpay(options);
-            rzp.open();
+            }
         });
 
         // Controls
         document.getElementById('prevBtn').addEventListener('click', async () => { current.setMonth(current.getMonth()-1); await refresh(); });
         document.getElementById('nextBtn').addEventListener('click', async () => { current.setMonth(current.getMonth()+1); await refresh(); });
-        document.getElementById('todayBtn').addEventListener('click', async () => { const now = new Date(); current = new Date(now.getFullYear(), now.getMonth(), 1); await refresh(); });
 
-        // Init
-        (async function(){ await refresh(); })();
-    </script>
+// Init
+(async function(){ await refresh(); })();
+</script>
 </body>
 </html>

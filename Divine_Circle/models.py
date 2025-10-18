@@ -20,8 +20,30 @@ class PoojaEvent(models.Model):
         return f"{self.title} on {self.date}"
 
 
+class PoojaSlot(models.Model):
+    event = models.ForeignKey(PoojaEvent, on_delete=models.CASCADE, related_name="slots")
+    start_time = models.TimeField()
+    end_time = models.TimeField(null=True, blank=True)
+    capacity = models.PositiveIntegerField(default=0)
+    booked_count = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["event", "start_time"]
+        unique_together = ("event", "start_time")
+
+    def __str__(self):
+        return f"{self.event.title} {self.start_time.strftime('%H:%M')} ({self.remaining} left)"
+
+    @property
+    def remaining(self) -> int:
+        rem = int(self.capacity) - int(self.booked_count)
+        return rem if rem > 0 else 0
+
+
 class PoojaBooking(models.Model):
     event = models.ForeignKey(PoojaEvent, on_delete=models.SET_NULL, null=True, blank=True, related_name="bookings")
+    slot = models.ForeignKey(PoojaSlot, on_delete=models.SET_NULL, null=True, blank=True, related_name="bookings")
     name = models.CharField(max_length=120)
     email = models.EmailField()
     phone = models.CharField(max_length=30, blank=True)

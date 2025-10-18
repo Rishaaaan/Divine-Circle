@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine Circle - Live Pooja Services from India</title>
+    <title>Circle Divine - Live Pooja Services from India</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -124,7 +125,7 @@
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.7);
         }
 
-        /* Hero Section */
+        /* Hero Section - UPDATED WITH CAROUSEL */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -134,14 +135,50 @@
             overflow: hidden;
         }
 
-        .hero-video {
+        .hero-background-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .hero-background-slide.active {
+            opacity: 1;
+        }
+
+        .hero-background-slide.slide-out {
+            animation: slideOutEffect 1.5s ease-in-out forwards;
+        }
+
+        @keyframes slideOutEffect {
+            0% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-100%) scale(0.8);
+            }
+        }
+
+        .hero-image, .hero-video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 0;
+        }
+
+        /* Ensure hero text wraps normally and doesn't break one word per line */
+        .hero h1, .hero-subtitle {
+            /* white-space: normal;
+            word-break: normal;
+            overflow-wrap: break-word; */
         }
 
         .hero-overlay {
@@ -150,10 +187,41 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(10, 22, 40, 0.85), rgba(30, 58, 138, 0.75));
+            background: linear-gradient(135deg, rgba(10, 22, 40, 0.85), rgba(30, 59, 138, 0.516));
             z-index: 1;
             transition: background 0.3s ease;
         }
+
+        /* Professional transition keyframes */
+        @keyframes slideDownOut {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0.9; }
+        }
+        .slide-out-bottom { animation: slideDownOut 1s cubic-bezier(.22,.61,.36,1) forwards; }
+
+        @keyframes fadeOutSoft {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .fade-out-soft { animation: fadeOutSoft 800ms ease forwards; }
+
+        @keyframes revealFadeIn {
+            0% { opacity: 0; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .reveal-fade-in { animation: revealFadeIn 0.8s ease-out forwards; }
+
+        @keyframes swipeOutRight {
+            0% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(60px); opacity: 0; }
+        }
+        .swipe-out-right { animation: swipeOutRight 500ms ease forwards; }
+
+        @keyframes swipeInLeft {
+            0% { transform: translateX(-40px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        .swipe-in-left { animation: swipeInLeft 600ms ease forwards; }
 
         .hero-content {
             text-align: center;
@@ -164,14 +232,39 @@
             position: relative;
         }
 
+        .hero-text-wrapper {
+            position: relative;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-text-item {
+            position: relative;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+
+        .hero-text-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-text-item.fade-out {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
         .hero h1 {
             font-family: 'Playfair Display', serif;
             font-size: 4.5rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
             line-height: 1.2;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards;
         }
 
         .hero h1 .gold {
@@ -184,18 +277,19 @@
         .hero-subtitle {
             font-size: 1.3rem;
             margin-bottom: 3rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease 0.3s forwards;
             font-weight: 300;
             color: var(--ivory);
+            line-height: 1.6;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-cta {
             display: flex;
             gap: 1.5rem;
             justify-content: center;
-            opacity: 0;
-            animation: fadeInUp 1s ease 0.6s forwards;
+            margin-top: 2rem;
         }
 
         .primary-btn {
@@ -209,6 +303,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            text-decoration: none;
+            display: inline-block;
         }
 
         .primary-btn:hover {
@@ -250,13 +346,6 @@
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.08; }
             50% { transform: translateY(-40px) rotate(10deg); opacity: 0.12; }
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         /* How It Works Section */
@@ -417,11 +506,12 @@
         }
 
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 2.5rem;
             max-width: 1400px;
             margin: 0 auto;
+            justify-content: center;
         }
 
         .stat-card {
@@ -434,6 +524,8 @@
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            flex: 1 1 300px;
+            max-width: 320px;
         }
 
         .stat-card::before {
@@ -579,42 +671,23 @@
 
         .use-case-image {
             width: 100%;
-            height: 250px;
+            aspect-ratio: 1 / 1;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            color: var(--secondary);
             position: relative;
             overflow: hidden;
-            transition: all 0.5s ease;
         }
 
-        .use-case-card:hover .use-case-image {
-            transform: scale(1.1);
-        }
-
-        .use-case-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        .use-case-img {
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, transparent 30%, rgba(212, 175, 55, 0.1) 100%);
+            object-fit: cover;
+            transition: transform .5s ease, filter .5s ease;
+            display: block;
         }
 
-        .use-case-image i {
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
-            transition: all 0.5s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .use-case-card:hover .use-case-image i {
-            transform: rotate(10deg) scale(1.1);
-            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.8));
+        .use-case-card:hover .use-case-img {
+            transform: scale(1.08);
+            filter: brightness(1.05) saturate(1.05);
         }
 
         .use-case-content {
@@ -652,7 +725,6 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
-            transform: translateX(0);
         }
 
         .use-case-card:hover .use-case-content li {
@@ -662,11 +734,6 @@
         .use-case-content li i {
             color: var(--secondary);
             font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .use-case-card:hover .use-case-content li i {
-            transform: scale(1.2);
         }
 
         /* Benefits Section */
@@ -1147,7 +1214,7 @@
     <nav id="navbar">
         <div class="logo">
             <i class="fas fa-om"></i>
-            Divine Circle
+            Circle Divine
         </div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
@@ -1160,22 +1227,87 @@
         <a href="{% url 'bookings' %}" class="cta-button">Book Now</a>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section - UPDATED WITH CAROUSEL -->
     <section class="hero" id="home">
-        <img src="https://images.unsplash.com/photo-1604608672516-f1b9b1b85e6f?w=1920&h=1080&fit=crop" alt="Temple" class="hero-video" />
-        <div class="hero-overlay" id="heroOverlay"></div>
+        <!-- Background Slide 1: Initial Image -->
+        <div class="hero-background-slide active" id="slide1">
+            <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/183084d5-ce83-40e7-9187-8555ba0657e9.png" alt="Temple" class="hero-image" />
+            <div class="hero-overlay"></div>
+        </div>
+
+        <!-- Background Slide 2: Video -->
+        <div class="hero-background-slide" id="slide2">
+            <video id="heroVideo" class="hero-video" muted playsinline>
+                <source src="{% static 'landing page video.mp4' %}" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+        </div>
         
         <i class="fas fa-om floating-om om-1"></i>
         <i class="fas fa-praying-hands floating-om om-2"></i>
         <i class="fas fa-dharmachakra floating-om om-3"></i>
 
         <div class="hero-content">
-            <h1>Sacred Rituals, <span class="gold">Global</span> Reach</h1>
-            <p class="hero-subtitle">Experience authentic Hindu poojas from India, live-streamed to your home anywhere in the world</p>
-            <div class="hero-cta">
-                <a href="{% url 'bookings' %}" class="primary-btn">Schedule a Pooja</a>
+            <div class="hero-text-wrapper">
+                <!-- Initial Text -->
+                <div class="hero-text-item active" id="text0">
+                    <h1>Sacred Rituals, <span class="gold">Global</span> Reach</h1>
+                    <p class="hero-subtitle">Experience authentic Hindu poojas from India, live-streamed to your home anywhere in the world</p>
+                    <div class="hero-cta">
+                        <a href="{% url 'bookings' %}" class="primary-btn">Schedule a Pooja</a>
+                        <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                    </div>
+                </div>
 
-                <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                <!-- Text Option 1 -->
+                <div class="hero-text-item" id="text1">
+                    <h1>This Diwali, <span class="gold">reconnect</span> with your roots through live poojas from India.</h1>
+                    <p class="hero-subtitle">Celebrate the festival of lights from anywhere in the world — experience authentic rituals, streamed from sacred spaces to your home.</p>
+                    <div class="hero-cta">
+                        <a href="{% url 'bookings' %}" class="primary-btn">Book Your Diwali Pooja</a>
+                        <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                    </div>
+                </div>
+
+                <!-- Text Option 2 -->
+                <div class="hero-text-item" id="text2">
+                    <h1>Bridging hearts and homes — this Diwali, <span class="gold">celebrate</span> with blessings from India.</h1>
+                    <p class="hero-subtitle">Join live poojas performed by trusted priests, blending tradition, technology, and togetherness in one divine experience.</p>
+                    <div class="hero-cta">
+                        <a href="{% url 'bookings' %}" class="primary-btn">Experience Live Blessings</a>
+                        <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                    </div>
+                </div>
+
+                <!-- Text Option 3 -->
+                <div class="hero-text-item" id="text3">
+                    <h1>Diwali. <span class="gold">Reimagined</span>. Reconnected. Relived.</h1>
+                    <p class="hero-subtitle">Book authentic poojas live from India — bringing divine blessings and festive warmth straight to your screen.</p>
+                    <div class="hero-cta">
+                        <a href="{% url 'bookings' %}" class="primary-btn">Start Your Journey</a>
+                        <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                    </div>
+                </div>
+
+                <!-- Text Option 4 -->
+                <div class="hero-text-item" id="text4">
+                    <h1>Light your Diwali with <span class="gold">blessings</span> that travel beyond borders.</h1>
+                    <p class="hero-subtitle">Experience sacred rituals, heartfelt prayers, and spiritual connection — all streamed live, wherever you are.</p>
+                    <div class="hero-cta">
+                        <a href="{% url 'bookings' %}" class="primary-btn">Connect with Tradition</a>
+                        <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                    </div>
+                </div>
+
+                <!-- Text Option 5 -->
+                <div class="hero-text-item" id="text5">
+                    <h1>Because Diwali isn't about <span class="gold">distance</span> — it's about devotion.</h1>
+                    <p class="hero-subtitle">Join your family in spirit with live poojas from India, uniting modern homes with timeless tradition.</p>
+                    <div class="hero-cta">
+                        <a href="{% url 'bookings' %}" class="primary-btn">Unite in Devotion</a>
+                        <button class="secondary-btn" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1184,7 +1316,7 @@
     <section class="how-it-works" id="how-it-works">
         <div class="section-title fade-in">
             <span class="badge">Simple & Seamless</span>
-            <h2>How <span class="gold">Divine Circle</span> Works</h2>
+            <h2>How <span class="gold">Circle Divine</span> Works</h2>
             <p>Experience sacred traditions in just four simple steps</p>
         </div>
         <div class="steps-container">
@@ -1224,7 +1356,6 @@
         <div class="cta-bottom">
             <p>Ready to experience divine blessings?</p>
             <a class="primary-btn" href="{% url 'bookings' %}">Get Started Today</a>
-
         </div>
     </section>
 
@@ -1274,7 +1405,7 @@
             </div>
         </div>
         <div class="testimonial fade-in">
-            <p>"Living in the USA, I thought we'd have to skip our daughter's Namkaran ceremony. Divine Circle made it feel like we were back in India, with our entire family participating via video. Truly divine!"</p>
+            <p>"Living in the USA, I thought we'd have to skip our daughter's Namkaran ceremony. Circle Divine made it feel like we were back in India, with our entire family participating via video. Truly divine!"</p>
             <div class="testimonial-author">Priya Sharma</div>
             <div class="testimonial-location">San Francisco, USA</div>
         </div>
@@ -1290,85 +1421,85 @@
         <div class="use-cases-grid">
             <div class="use-case-card fade-in">
                 <div class="use-case-image">
-                    <i class="fas fa-home"></i>
+                    <img src="{% static 'generated_image.png' %}" class="use-case-img" alt="Housewarming" />
                 </div>
                 <div class="use-case-content">
                     <h3>Griha Pravesh (Housewarming)</h3>
                     <p>Bless your new home with traditional Vastu pooja and invoke positive energies for prosperity and peace.</p>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> Vastu Shanti for harmony</li>
-                        <li><i class="fas fa-check-circle"></i> Ganesh pooja for obstacles removal</li>
-                        <li><i class="fas fa-check-circle"></i> Lakshmi pooja for prosperity</li>
+                        <li><i class="fas fa-check"></i> Vastu Shanti for harmony</li>
+                        <li><i class="fas fa-check"></i> Ganesh pooja for obstacles removal</li>
+                        <li><i class="fas fa-check"></i> Lakshmi pooja for prosperity</li>
                     </ul>
                 </div>
             </div>
             <div class="use-case-card fade-in">
                 <div class="use-case-image">
-                    <i class="fas fa-car"></i>
+                    <img src="{% static 'generated_image_1.png' %}" alt="Vehicle Pooja" class="use-case-img" />
                 </div>
                 <div class="use-case-content">
                     <h3>Vehicle Pooja</h3>
                     <p>Start your new car journey with divine blessings for safety and protection on every road.</p>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> Navagraha pooja for safe travels</li>
-                        <li><i class="fas fa-check-circle"></i> Hanuman mantra for protection</li>
-                        <li><i class="fas fa-check-circle"></i> Customized for all vehicle types</li>
+                        <li><i class="fas fa-check"></i> Navagraha pooja for safe travels</li>
+                        <li><i class="fas fa-check"></i> Hanuman mantra for protection</li>
+                        <li><i class="fas fa-check"></i> Customized for all vehicle types</li>
                     </ul>
                 </div>
             </div>
             <div class="use-case-card fade-in">
                 <div class="use-case-image">
-                    <i class="fas fa-briefcase"></i>
+                    <img src="{% static 'generated_image_2.png' %}" alt="Business Opening" class="use-case-img" />
                 </div>
                 <div class="use-case-content">
                     <h3>Business Opening</h3>
                     <p>Launch your venture with Lakshmi and Ganesh pooja for success, growth, and prosperity in business.</p>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> Muhurat selection for opening</li>
-                        <li><i class="fas fa-check-circle"></i> Wealth and success mantras</li>
-                        <li><i class="fas fa-check-circle"></i> Office/shop Vastu consultation</li>
+                        <li><i class="fas fa-check"></i> Muhurat selection for opening</li>
+                        <li><i class="fas fa-check"></i> Wealth and success mantras</li>
+                        <li><i class="fas fa-check"></i> Office/shop Vastu consultation</li>
                     </ul>
                 </div>
             </div>
             <div class="use-case-card fade-in">
                 <div class="use-case-image">
-                    <i class="fas fa-baby"></i>
+                    <img src="{% static 'generated_image_3.png' %}" alt="Naming Ceremony" class="use-case-img" />
                 </div>
                 <div class="use-case-content">
                     <h3>Naming Ceremony (Namkaran)</h3>
                     <p>Welcome your newborn with traditional rituals and astrologically aligned name selection.</p>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> Jyotish-based name suggestions</li>
-                        <li><i class="fas fa-check-circle"></i> Blessings for health & wisdom</li>
-                        <li><i class="fas fa-check-circle"></i> Family involvement options</li>
+                        <li><i class="fas fa-check"></i> Jyotish-based name suggestions</li>
+                        <li><i class="fas fa-check"></i> Blessings for health & wisdom</li>
+                        <li><i class="fas fa-check"></i> Family involvement options</li>
                     </ul>
                 </div>
             </div>
             <div class="use-case-card fade-in">
                 <div class="use-case-image">
-                    <i class="fas fa-graduation-cap"></i>
+                    <img src="{% static 'saraswati.png' %}" alt="Saraswati Pooja" class="use-case-img" />
                 </div>
                 <div class="use-case-content">
                     <h3>Saraswati Pooja</h3>
                     <p>Seek blessings for education, exams, and new learning endeavors from the goddess of wisdom.</p>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> Perfect for students abroad</li>
-                        <li><i class="fas fa-check-circle"></i> Exam success mantras</li>
-                        <li><i class="fas fa-check-circle"></i> Career guidance rituals</li>
+                        <li><i class="fas fa-check"></i> Perfect for students abroad</li>
+                        <li><i class="fas fa-check"></i> Exam success mantras</li>
+                        <li><i class="fas fa-check"></i> Career guidance rituals</li>
                     </ul>
                 </div>
             </div>
             <div class="use-case-card fade-in">
                 <div class="use-case-image">
-                    <i class="fas fa-fire"></i>
+                    <img src="{% static 'diwali.png' %}" alt="Festival Celebrations" class="use-case-img" />
                 </div>
                 <div class="use-case-content">
                     <h3>Festival Celebrations</h3>
                     <p>Don't miss Diwali, Navratri, or any Hindu festival celebrations with authentic rituals from home.</p>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> All major Hindu festivals</li>
-                        <li><i class="fas fa-check-circle"></i> Regional variations available</li>
-                        <li><i class="fas fa-check-circle"></i> Community group bookings</li>
+                        <li><i class="fas fa-check"></i> All major Hindu festivals</li>
+                        <li><i class="fas fa-check"></i> Regional variations available</li>
+                        <li><i class="fas fa-check"></i> Community group bookings</li>
                     </ul>
                 </div>
             </div>
@@ -1378,7 +1509,7 @@
     <!-- Benefits Section -->
     <section class="benefits" id="benefits">
         <div class="section-title fade-in">
-            <span class="badge" style="border-color: var(--secondary); color: var(--secondary);">The Divine Circle Advantage</span>
+            <span class="badge" style="border-color: var(--secondary); color: var(--secondary);">The Circle Divine Advantage</span>
             <h2>Why Thousands of <span class="gold">NRIs</span> Trust Us</h2>
             <p>For their spiritual needs</p>
         </div>
@@ -1586,7 +1717,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>Divine Circle</h3>
+                <h3>Circle Divine</h3>
                 <p>Bringing the sacred traditions of India to your doorstep, wherever you are in the world.</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -1615,18 +1746,153 @@
             </div>
             <div class="footer-section">
                 <h3>Contact Info</h3>
-                <p><i class="fas fa-envelope"></i> support@divinecircle.com</p>
+                <p><i class="fas fa-envelope"></i> support@circledivine.com</p>
                 <p><i class="fas fa-phone"></i> +1 (800) 555-PUJA</p>
                 <p><i class="fas fa-clock"></i> Available 24/7</p>
                 <p><i class="fas fa-globe"></i> Serving worldwide</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 Divine Circle. All rights reserved. | Connecting devotees globally with sacred traditions.</p>
+            <p>&copy; 2025 Circle Divine. All rights reserved. | Connecting devotees globally with sacred traditions.</p>
         </div>
     </footer>
 
     <script>
+        // Hero Carousel JavaScript (state-machine)
+        const slide1 = document.getElementById('slide1');
+        const slide2 = document.getElementById('slide2');
+        const videoEl = document.getElementById('heroVideo');
+        const initialText = document.getElementById('text0');
+        let currentTextSlide = 0; // 0 = initial, 1-5 rotating
+        let textRotateTimer = null;
+        let mode = 'image'; // 'image' | 'video'
+        let videoPlayCount = 0;
+
+        function showText(id) {
+            // hide all text blocks
+            for (let i = 0; i <= 5; i++) {
+                const el = document.getElementById(`text${i}`);
+                if (!el) continue;
+                el.classList.remove('active', 'fade-out');
+                el.style.display = (i === id) ? 'block' : 'none';
+            }
+            requestAnimationFrame(() => {
+                const el = document.getElementById(`text${id}`);
+                if (el) el.classList.add('active');
+            });
+        }
+
+        function startTextRotation(noInitialShow = false) {
+            stopTextRotation();
+            currentTextSlide = currentTextSlide >= 1 && currentTextSlide <= 5 ? currentTextSlide : 1;
+            if (!noInitialShow) {
+                showText(currentTextSlide);
+            }
+            textRotateTimer = setInterval(() => {
+                const current = document.getElementById(`text${currentTextSlide}`);
+                if (current) {
+                    current.classList.remove('active', 'fade-out', 'swipe-in-left', 'swipe-out-right');
+                    current.classList.add('swipe-out-right');
+                }
+                setTimeout(() => {
+                    if (current) {
+                        current.style.display = 'none';
+                        current.classList.remove('swipe-out-right');
+                    }
+                    currentTextSlide = currentTextSlide === 5 ? 1 : currentTextSlide + 1;
+                    const next = document.getElementById(`text${currentTextSlide}`);
+                    if (next) {
+                        next.style.display = 'block';
+                        next.classList.remove('fade-out', 'swipe-out-right');
+                        next.classList.add('swipe-in-left');
+                        setTimeout(() => {
+                            next.classList.remove('swipe-in-left');
+                            next.classList.add('active');
+                        }, 600);
+                    }
+                }, 500);
+            }, 15000);
+        }
+
+        function stopTextRotation() {
+            if (textRotateTimer) {
+                clearInterval(textRotateTimer);
+                textRotateTimer = null;
+            }
+        }
+
+        function transitionToVideo() {
+            mode = 'video';
+            // start revealing video slightly before image leaves
+            slide2.classList.add('active', 'reveal-fade-in');
+            setTimeout(() => {
+                slide2.classList.remove('reveal-fade-in');
+            }, 800);
+            // start fading image after ~0.3s
+            setTimeout(() => {
+                slide1.classList.add('fade-out-soft');
+                initialText.classList.add('swipe-out-right');
+            }, 300);
+            // show first rotating tagline 500ms after video reveal begins
+            setTimeout(() => {
+                currentTextSlide = 1;
+                const first = document.getElementById('text1');
+                if (first) {
+                    // ensure initial text is hidden
+                    initialText.style.display = 'none';
+                    first.style.display = 'block';
+                    first.classList.remove('fade-out', 'swipe-out-right');
+                    first.classList.add('swipe-in-left');
+                    setTimeout(() => {
+                        first.classList.remove('swipe-in-left');
+                        first.classList.add('active');
+                    }, 600);
+                }
+                // start rotation without re-showing immediately
+                startTextRotation(true);
+            }, 500);
+            // finalize after the slide-out animation
+            setTimeout(() => {
+                slide1.classList.remove('active', 'fade-out-soft');
+                initialText.style.display = 'none';
+                // Play video twice then go back to image
+                videoPlayCount = 0;
+                videoEl.currentTime = 0;
+                videoEl.play().catch(()=>{});
+            }, 1600);
+        }
+
+        function transitionToImage(durationMs = 20000) {
+            mode = 'image';
+            // keep rotating taglines/subtaglines even on image background
+            slide2.classList.remove('active');
+            slide1.classList.add('active');
+            // after duration, go to video again
+            setTimeout(() => {
+                if (mode === 'image') transitionToVideo();
+            }, durationMs);
+        }
+
+        // Handle video ended to count plays
+        videoEl.addEventListener('ended', () => {
+            videoPlayCount += 1;
+            if (videoPlayCount < 2) {
+                // play one more time
+                videoEl.currentTime = 0;
+                videoEl.play().catch(()=>{});
+            } else {
+                // after two plays, return to image for 20s
+                transitionToImage(20000);
+            }
+        });
+
+        // Start: show image initially, then after 5s transition to video
+        // Ensure initial state
+        slide1.classList.add('active');
+        slide2.classList.remove('active');
+        showText(0);
+        setTimeout(() => transitionToVideo(), 2000);
+
         // Scroll Progress Bar
         window.addEventListener('scroll', () => {
             const scrollProgress = document.getElementById('scrollProgress');
@@ -1652,14 +1918,14 @@
         });
 
         // Hero overlay opacity change on scroll
-        const heroOverlay = document.getElementById('heroOverlay');
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
             const maxScroll = 600;
             const opacity = Math.max(0.75 - (scrolled / maxScroll) * 0.5, 0.25);
-            if (heroOverlay) {
-                heroOverlay.style.background = `linear-gradient(135deg, rgba(10, 22, 40, ${opacity}), rgba(30, 58, 138, ${opacity - 0.1}))`;
-            }
+            const overlays = document.querySelectorAll('.hero-overlay');
+            overlays.forEach(overlay => {
+                overlay.style.background = `linear-gradient(135deg, rgba(10, 22, 40, ${opacity}), rgba(30, 58, 138, ${opacity - 0.1}))`;
+            });
         });
 
         // Intersection Observer for animations
@@ -1878,17 +2144,6 @@
             item.style.transition = 'all 0.5s ease';
             benefitObserver.observe(item);
         });
-
-        // Dynamic background pattern animation
-        setInterval(() => {
-            const sections = document.querySelectorAll('.why-nris, .benefits');
-            sections.forEach(section => {
-                const before = window.getComputedStyle(section, '::before');
-                if (before) {
-                    section.style.setProperty('--rotate', Math.random() * 360 + 'deg');
-                }
-            });
-        }, 5000);
     </script>
 </body>
 </html>
