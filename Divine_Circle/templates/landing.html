@@ -1510,13 +1510,13 @@
     <section class="benefits" id="benefits">
         <div class="section-title fade-in">
             <span class="badge" style="border-color: var(--secondary); color: var(--secondary);">The Circle Divine Advantage</span>
-            <h2>Why Thousands of <span class="gold">NRIs</span> Trust Us</h2>
+            <h2>Why Thousands of <span class="gold">Famillies</span> Trust Us</h2>
             <p>For their spiritual needs</p>
         </div>
         <div class="benefits-container">
             <div class="benefits-visual fade-in">
                 <div class="benefits-image">
-                    <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnJ5bGI0bjY4NW9xZnp6NXkyZ2J1anBvaDRodjZidzZvZHZ5OG9pZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlN5Y28D9MzzcRy/giphy.gif" alt="Pooja ceremony">
+                    <img src="{% static 'ezgif.com-animated-gif-maker.gif' %}" alt="Pooja ceremony">
                 </div>
             </div>
             <div class="benefits-list">
@@ -2144,6 +2144,113 @@
             item.style.transition = 'all 0.5s ease';
             benefitObserver.observe(item);
         });
+    </script>
+    <script type="module">
+        import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
+        Chatbot.init({
+            chatflowid: "cbf65d70-e435-4c63-bcfc-3d661fae4d69",
+            apiHost: "https://circle-divine-chatbot.onrender.com",
+            chatflowConfig: {
+                /* Chatflow Config */
+            },
+            observersConfig: {
+                /* Observers Config */
+            },
+            theme: {
+                button: {
+                    backgroundColor: '#3B81F6',
+                    right: 20,
+                    bottom: 20,
+                    size: 48,
+                    dragAndDrop: true,
+                    iconColor: 'white',
+                    customIconSrc: 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/google-messages.svg',
+                    autoWindowOpen: {
+                        autoOpen: true,
+                        openDelay: 2,
+                        autoOpenOnMobile: false
+                    }
+                },
+                tooltip: {
+                    showTooltip: true,
+                    tooltipMessage: 'Namaste 🙏!',
+                    tooltipBackgroundColor: 'black',
+                    tooltipTextColor: 'white',
+                    tooltipFontSize: 16
+                },
+                disclaimer: {
+                    title: 'Disclaimer',
+                    message: "By using this chatbot, you agree to the <a target=\"_blank\" href=\"https://flowiseai.com/terms\">Terms & Condition</a>",
+                    textColor: 'black',
+                    buttonColor: '#21214f',
+                    buttonText: 'Start Chatting',
+                    buttonTextColor: 'white',
+                    blurredBackgroundColor: 'rgba(0, 0, 0, 0.4)',
+                    backgroundColor: 'white'
+                },
+                customCSS: ``,
+                chatWindow: {
+                    showTitle: true,
+                    showAgentMessages: true,
+                    title: 'Circle Divine Assistant',
+                    titleAvatarSrc: 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/google-messages.svg',
+                    welcomeMessage: 'Namaste 🙏 Welcome to Circle Divine I’m here to guide you in booking and experiencing authentic online poojas.',
+                    errorMessage: 'Something went wrong!',
+                    backgroundColor: '#21214f',
+                    backgroundImage: 'enter image path or link',
+                    height: 700,
+                    width: 400,
+                    fontSize: 16,
+                    starterPrompts: [
+                        "What is Circle Divine?",
+                        "Know about the pricing plans.",
+                        "How to book a pooja session?"
+                    ],
+                    starterPromptFontSize: 15,
+                    clearChatOnReload: false,
+                    sourceDocsTitle: 'Sources:',
+                    renderHTML: true,
+                    botMessage: {
+                        backgroundColor: '#f7f8ff',
+                        textColor: '#303235',
+                        showAvatar: true,
+                        avatarSrc: 'https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/parroticon.png'
+                    },
+                    userMessage: {
+                        backgroundColor: '#3B81F6',
+                        textColor: '#ffffff',
+                        showAvatar: true,
+                        avatarSrc: 'https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/usericon.png'
+                    },
+                    textInput: {
+                        placeholder: 'Type your question',
+                        backgroundColor: '#ffffff',
+                        textColor: '#303235',
+                        sendButtonColor: '#3B81F6',
+                        maxChars: 50,
+                        maxCharsWarningMessage: 'You exceeded the characters limit. Please input less than 50 characters.',
+                        autoFocus: true,
+                        sendMessageSound: true,
+                        sendSoundLocation: 'send_message.mp3',
+                        receiveMessageSound: true,
+                        receiveSoundLocation: 'receive_message.mp3'
+                    },
+                    feedback: {
+                        color: '#303235'
+                    },
+                    dateTimeToggle: {
+                        date: true,
+                        time: true
+                    },
+                    footer: {
+                        textColor: '#303235',
+                        text: 'Powered by',
+                        company: 'Circle Divine',
+                        companyLink: 'https://circledivine.com/'
+                    }
+                }
+            }
+        })
     </script>
 </body>
 </html>
