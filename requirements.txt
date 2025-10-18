@@ -2,10 +2,8 @@ asgiref==3.10.0
 certifi==2025.10.5
 charset-normalizer==3.4.3
 Django==5.2.7
-
 idna==3.10
-paypalserversdk
-
+paypal-server-sdk==1.1.0
 requests==2.32.5
 sqlparse==0.5.3
 tzdata==2025.2
