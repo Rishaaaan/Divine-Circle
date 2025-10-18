@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/bookings/', views.create_booking, name='create_booking'),
     path('api/payments/paypal/order/', views.create_paypal_order, name='create_paypal_order'),
     path('api/payments/paypal/capture/', views.capture_paypal_order, name='capture_paypal_order'),
+    path('api/contact/submit/', views.contact_submit, name='contact_submit'),
 ]

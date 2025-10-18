@@ -62,3 +62,17 @@ class PoojaBooking(models.Model):
 
     def __str__(self):
         return f"Booking by {self.name} ({self.email}) - {self.payment_status}"
+
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=120)
+    email = models.EmailField()
+    phone = models.CharField(max_length=30, blank=True)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Contact from {self.name} ({self.email})"

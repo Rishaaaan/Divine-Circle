@@ -1604,6 +1604,12 @@
                     </div>
                     <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
                 </form>
+                <!-- <div style="margin-top:1rem; display:flex; align-items:center; gap:.6rem;">
+                    <span class="muted" style="color:#6b7280;">You can also talk to our Customer Support Executive:</span>
+                    <a href="https://elevenlabs.io/app/talk-to?agent_id=agent_3001k7q5d58keqvtscfmzt292gc5" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:.45rem; padding:.55rem .9rem; border-radius:10px; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); color:#0b1220; text-decoration:none; font-weight:800;">
+                        <i class="fas fa-phone"></i> Call Agent
+                    </a>
+                </div> -->
             </div>
         </div>
     </section>
@@ -1746,8 +1752,8 @@
             </div>
             <div class="footer-section">
                 <h3>Contact Info</h3>
-                <p><i class="fas fa-envelope"></i> support@circledivine.com</p>
-                <p><i class="fas fa-phone"></i> +1 (800) 555-PUJA</p>
+                <p><i class="fas fa-envelope"></i> rishangupta857@gmail.com</p>
+                <p><i class="fas fa-phone"></i> +91 8851589608</p>
                 <p><i class="fas fa-clock"></i> Available 24/7</p>
                 <p><i class="fas fa-globe"></i> Serving worldwide</p>
             </div>
@@ -1979,10 +1985,31 @@
         });
 
         // Form submission
-        document.getElementById('scheduleForm').addEventListener('submit', (e) => {
+        document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert('Thank you for your interest! Our team will contact you within 24 hours to discuss your pooja requirements and finalize the details.');
-            e.target.reset();
+            const form = e.target;
+            const payload = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                message: document.getElementById('message').value,
+            };
+            try {
+                const res = await fetch('/api/contact/submit/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(()=>({error:'Submission failed'}));
+                    alert('Could not submit your query: ' + (err.error || 'Please try again.'));
+                    return;
+                }
+                alert('Thank you! Your message has been received. Our team will contact you within 24 hours.');
+                form.reset();
+            } catch(err) {
+                alert('Network error while submitting. Please try again later.');
+            }
         });
 
         // Parallax effect for floating Om symbols

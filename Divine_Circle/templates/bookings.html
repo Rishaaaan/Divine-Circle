@@ -84,6 +84,29 @@
             .event-col { max-height: 50vh; }
         }
 
+        /* Enhanced slot selection UI */
+        .slot-list { display: grid; grid-template-columns: 1fr; gap: .5rem; }
+        .slot-card { display:flex; align-items:center; gap:.75rem; padding:.65rem .75rem; border:1px solid rgba(212,175,55,0.25); border-radius:12px; background: rgba(255,255,255,0.03); cursor:pointer; transition:.2s; }
+        .slot-card:hover { border-color: var(--secondary); box-shadow: 0 8px 24px rgba(212,175,55,0.2); transform: translateY(-1px); }
+        .slot-card input { appearance: none; width:15px; height:15px; border-radius:1%; border:2px solid var(--secondary); display:inline-block; position:relative; }
+        .slot-card input:checked { background: var(--secondary); box-shadow: 0 0 0 3px rgba(212,175,55,0.25) inset; }
+        .slot-time { font-weight:700; color:#eaeefb; }
+        .slot-left { margin-left:auto; font-size:.85rem; color: var(--secondary); font-weight:700; }
+        .slot-disabled { opacity:.5; cursor:not-allowed; }
+        .slot-disabled .slot-left { color:#ff6b6b; }
+
+        /* Diwali themed confirmation popup */
+        .diwali-backdrop { position:fixed; inset:0; background: radial-gradient(1200px 600px at 50% -200px, rgba(244,208,63,0.15), rgba(0,0,0,0.75)); display:none; align-items:center; justify-content:center; z-index: 3000; }
+        .diwali-modal { width:min(92vw,720px); background: linear-gradient(180deg, #10182a, #0f1b2e); border:1px solid rgba(212,175,55,0.35); border-radius:20px; box-shadow: 0 30px 100px rgba(212,175,55,0.25); overflow:hidden; position:relative; }
+        .diwali-header { padding:1rem 1.25rem; background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(244,208,63,0.12)); border-bottom:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:.6rem; }
+        .diya { width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:8px; background: radial-gradient(circle at 50% 30%, #ffd27a, #ff9f1a 60%, #b36b00); box-shadow: 0 0 18px rgba(255,200,80,0.7), 0 0 40px rgba(255,200,80,0.25); }
+        .diwali-title { font-family:'Playfair Display',serif; font-size:1.3rem; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .diwali-body { padding:1.25rem; color: rgba(255,255,255,0.9); }
+        .diwali-body h3 { font-size:1.4rem; margin-bottom:.5rem; color: var(--ivory); }
+        .diwali-body p { line-height:1.7; }
+        .diwali-footer { display:flex; justify-content:flex-end; gap:.6rem; padding:1rem 1.25rem; border-top:1px solid rgba(212,175,55,0.15); background: rgba(255,255,255,0.02); }
+        .close-gold { padding:.6rem 1rem; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); border:none; border-radius:10px; color:#0b1220; font-weight:800; cursor:pointer; box-shadow:0 10px 25px rgba(212,175,55,.35); }
+
         /* Booking form */
         .form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:1rem; }
         .form-grid .full { grid-column: 1 / -1; }
@@ -201,6 +224,24 @@
                     </div>
                 </form>
                 <div id="paypal-button-container" style="display:none; margin-top: 1rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diwali Confirmation Popup -->
+    <div class="diwali-backdrop" id="diwaliPopup">
+        <div class="diwali-modal">
+            <div class="diwali-header">
+                <div class="diya"><i class="fas fa-fire" style="color:#fff7e6;"></i></div>
+                <div class="diwali-title">Diwali Blessings</div>
+            </div>
+            <div class="diwali-body">
+                <h3>Your booking has been confirmed!</h3>
+                <p>Don’t worry if your payment didn’t go through — we’re offering free poojas to our customers this Diwali.</p>
+                <p style="margin-top:.5rem; font-style:italic; color: rgba(255,255,255,0.9);">May this Diwali bring light, faith, and good fortune your way.</p>
+            </div>
+            <div class="diwali-footer">
+                <button class="close-gold" onclick="closeDiwaliPopup()">Continue</button>
             </div>
         </div>
     </div>
@@ -374,20 +415,25 @@
                         <div class="event-col">
                             <h5>Description</h5>
                             ${e.description ? `<p style="color: rgba(255,255,255,.9)">${e.description}</p>`: '<p class="muted">No description available.</p>'}
-                            ${(e.slots && e.slots.length) ? `<div style="margin-top:.5rem;"><h5>Available Slots</h5>
-                                <div style="display:flex; flex-direction:column; gap:.35rem;">
+                            <div style="margin-top:.75rem;">
+                                <h5>Samagri</h5>
+                                ${e.samagri ? `<ul class="samagri-list">${(e.samagri||'').split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>` : '<p class="muted">Not specified.</p>'}
+                            </div>
+                        </div>
+                        <div class="event-col">
+                            <h5>Choose Your Slot</h5>
+                            <div class="muted" style="margin: .25rem 0 .5rem; font-size:.9rem;">All pooja times are listed in US Eastern Time zone (UTC-4) aligned with the Diwali Muhurat in India</div>
+                            ${(e.slots && e.slots.length) ? `
+                                <div class="slot-list">
                                     ${e.slots.map(s => `
-                                        <label style="display:flex; align-items:center; gap:.5rem;">
+                                        <label class="slot-card ${s.remaining>0? '': 'slot-disabled'}">
                                             <input type="radio" name="slot_${e.id}" value="${s.id}" ${s.remaining>0?'':'disabled'} />
-                                            <span>${s.start_time}${s.end_time? ' - '+s.end_time:''} — ${s.remaining>0? `${s.remaining} left` : 'Fully booked'}</span>
+                                            <span class="slot-time">${s.start_time}${s.end_time? ' - '+s.end_time:''}</span>
+                                            <span class="slot-left">${s.remaining>0? `${s.remaining} left` : 'Fully booked'}</span>
                                         </label>
                                     `).join('')}
                                 </div>
-                            </div>` : '<p class="muted" style="margin-top:.5rem;">No slots configured for this event.</p>'}
-                        </div>
-                        <div class="event-col">
-                            <h5>Samagri</h5>
-                            ${e.samagri ? `<ul class="samagri-list">${(e.samagri||'').split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>` : '<p class="muted">Not specified.</p>'}
+                            ` : '<p class="muted" style="margin-top:.5rem;">No slots configured for this event.</p>'}
                         </div>
                     </div>
                     <div style="display:flex; justify-content:flex-end; margin-top:.75rem;">
@@ -410,9 +456,21 @@
         }
         function closeBookingModal(){ bookingModal.style.display = 'none'; }
 
+        // Diwali popup controls
+        function openDiwaliPopup(){
+            const el = document.getElementById('diwaliPopup');
+            if (el) el.style.display = 'flex';
+        }
+        function closeDiwaliPopup(){
+            const el = document.getElementById('diwaliPopup');
+            if (el) el.style.display = 'none';
+        }
+
         // Booking submit with PayPal payment flow
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            // Show Diwali confirmation popup immediately upon clicking Confirm Booking
+            openDiwaliPopup();
             const payload = {
                 event_id: document.getElementById('event_id').value || null,
                 name: document.getElementById('name').value,
@@ -455,7 +513,7 @@
                             if (captureRes.ok) {
                                 closeBookingModal();
                                 closeEventsModal();
-                                alert('Payment successful! Your booking is confirmed.');
+                                // Diwali popup already shown on submit; keep UX clean here.
                             } else {
                                 const err = await captureRes.json().catch(()=>({error:'Capture failed'}));
                                 alert('Payment capture failed: ' + (err.error || 'Please contact support.'));

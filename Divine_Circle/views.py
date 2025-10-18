@@ -36,7 +36,7 @@ def landing(request):
 
 def bookings(request):
     return render(request, 'bookings.html', {
-        "paypal_client_id": os.environ.get("PAYPAL_CLIENT_ID", "AQy2n1awQMGefHOGImOwdNSrfVa4Rm515kimPo-EnpRYMQwDXbpq8hDpsoUMv8-JLx9Ym3nIF0evE8YA")
+        "paypal_client_id": os.environ.get("PAYPAL_CLIENT_ID", '')
     })
 
 @require_http_methods(["GET"])
@@ -104,8 +104,8 @@ def events_by_date(request, date):
 # Initialize PayPal client
 paypal_client: PaypalServersdkClient = PaypalServersdkClient(
     client_credentials_auth_credentials=ClientCredentialsAuthCredentials(
-        o_auth_client_id=os.getenv("PAYPAL_CLIENT_ID","AQy2n1awQMGefHOGImOwdNSrfVa4Rm515kimPo-EnpRYMQwDXbpq8hDpsoUMv8-JLx9Ym3nIF0evE8YA"),
-        o_auth_client_secret=os.getenv("PAYPAL_CLIENT_SECRET","EN0oC58269O-_Xiys_mjZLr9YBAV3VZ8l9UeL8EyJyiaZMPWAVgF2fFJSZrDTl20CZ5QOcVHskvCFx0s"),
+        o_auth_client_id=os.getenv("PAYPAL_CLIENT_ID",""),
+        o_auth_client_secret=os.getenv("PAYPAL_CLIENT_SECRET",""),
     ),
     logging_configuration=LoggingConfiguration(
         log_level=logging.INFO,
@@ -136,6 +136,7 @@ def create_booking(request):
     message = (data.get("message") or "").strip()
     event_id = data.get("event_id")
     slot_id = data.get("slot_id")
+    slot_id = data.get("slot_id")
 
     if not name or not email:
         return JsonResponse({"error": "Name and email are required"}, status=400)
@@ -143,6 +144,14 @@ def create_booking(request):
     event = None
     if event_id:
         event = get_object_or_404(PoojaEvent, pk=event_id)
+    slot = None
+    if slot_id:
+        slot = get_object_or_404(PoojaSlot, pk=slot_id, is_active=True)
+        if event and slot.event_id != event.id:
+            return JsonResponse({"error": "Slot does not belong to selected event"}, status=400)
+        # Ensure slot has capacity
+        if int(slot.booked_count) >= int(slot.capacity):
+            return JsonResponse({"error": "Selected slot is fully booked"}, status=400)
     slot = None
     if slot_id:
         slot = get_object_or_404(PoojaSlot, pk=slot_id, is_active=True)
@@ -264,6 +273,26 @@ def create_paypal_order(request):
         "amount": amount_value_str,
         "currency": currency,
     })
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def contact_submit(request):
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    name = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip()
+    phone = (data.get("phone") or "").strip()
+    message = (data.get("message") or "").strip()
+
+    if not name or not email or not message:
+        return JsonResponse({"error": "Name, email and message are required"}, status=400)
+
+    from .models import ContactMessage
+    cm = ContactMessage.objects.create(name=name, email=email, phone=phone, message=message)
+    return JsonResponse({"status": "ok", "id": cm.id, "created_at": cm.created_at.isoformat()})
 
 @csrf_exempt
 @require_http_methods(["POST"])
