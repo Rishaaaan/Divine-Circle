@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django import forms
 from datetime import time
-from .models import PoojaEvent, PoojaBooking, PoojaSlot
+from .models import PoojaEvent, PoojaBooking, PoojaSlot, ContactMessage
+
+
 
 # Register your models here.
 @admin.register(PoojaEvent)
@@ -128,6 +130,12 @@ class PoojaEventAdmin(admin.ModelAdmin):
     copy_slots_from_first_event.short_description = "Copy all time slots from first selected event to others"
 
 
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'message', 'created_at')
+    list_filter = ('created_at',)
+
 @admin.register(PoojaBooking)
 class PoojaBookingAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "phone", "event", "slot", "payment_status", "created_at")
@@ -186,3 +194,9 @@ class PoojaSlotAdmin(admin.ModelAdmin):
                     created += 1
             if created:
                 self.message_user(request, f"Copied {created} timings from '{src_event.title}' into event '{obj.event.title}'.")
+
+
+
+
+
+
