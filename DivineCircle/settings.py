@@ -79,7 +79,7 @@ import os
 
 # Detect if running on Render
 ON_RENDER = 'RENDER_EXTERNAL_URL' in os.environ
-
+DATABASE_URL='postgres://postgres.mtqdmprkteqdbdrifbyo:rishiyo200512@aws-1-us-east-1.pooler.supabase.com:5432/postgres'
 if ON_RENDER:
     # Session Pooler for Render (IPv4-compatible)
     DATABASES = {
