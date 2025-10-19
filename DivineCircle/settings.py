@@ -75,16 +75,37 @@ WSGI_APPLICATION = 'DivineCircle.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  # usually 'postgres' or the name shown in Supabase
-        'USER': 'postgres',
-        'PASSWORD': 'rishiyo200512',
-        'HOST': 'db.mtqdmprkteqdbdrifbyo.supabase.co',
-        'PORT': '5432',
+import os
+
+# Detect if running on Render
+ON_RENDER = 'RENDER_EXTERNAL_URL' in os.environ
+
+if ON_RENDER:
+    # Use IPv4 Session Pooler for Render
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'rishiyo200512',
+            'HOST': 'db.mtqdmprkteqdbdrifbyo.pooler.supabase.com',
+            'PORT': '6544',
+        }
     }
-}
+else:
+    # Local connection (works on your laptop)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'rishiyo200512',
+            'HOST': 'db.mtqdmprkteqdbdrifbyo.supabase.co',
+            'PORT': '5432',
+        }
+    }
+
+
 
 
 
