@@ -423,6 +423,14 @@
                                         </label>
                                     `).join('')}
                                 </div>
+                                <div style="display:flex; justify-content:flex-end; margin-top:.9rem;">
+                                    <button class="gold-btn" style="padding:1rem 1.5rem; font-size:1.1rem; width:100%;" onclick="(function(){
+                                        const picked = document.querySelector('input[name=slot_${e.id}]:checked');
+                                        if(!picked){ alert('Please select a slot for this event first.'); return; }
+                                        currentSelectedSlotId = picked.value; 
+                                        openBookingModal(${e.id}, '${dateStr}', '${(e.title||'').replace(/'/g,"&apos;")}');
+                                    })()">Book this pooja</button>
+                                </div>
                             ` : '<p class="muted" style="margin-top:.5rem;">No slots configured for this event.</p>'}
                         </div>
                         <div class="event-col">
@@ -433,14 +441,6 @@
                                 ${e.samagri ? `<ul class="samagri-list">${(e.samagri||'').split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>` : '<p class="muted">Not specified.</p>'}
                             </div>
                         </div>
-                    </div>
-                    <div style="display:flex; justify-content:flex-end; margin-top:.75rem;">
-                        <button class="gold-btn" onclick="(function(){
-                            const picked = document.querySelector('input[name=slot_${e.id}]:checked');
-                            if(!picked){ alert('Please select a slot for this event first.'); return; }
-                            currentSelectedSlotId = picked.value; 
-                            openBookingModal(${e.id}, '${dateStr}', '${(e.title||'').replace(/'/g,"&apos;")}');
-                        })()">Book this pooja</button>
                     </div>
                 </div>
             `).join('');
