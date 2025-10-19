@@ -61,14 +61,14 @@
         .modal-backdrop { position:fixed; inset:0; background: rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index: 2000; }
         .modal { width: min(95vw, 720px); max-height: 90vh; background: #0f1b2e; border:1px solid rgba(212,175,55,0.25); border-radius:18px; box-shadow: 0 25px 80px rgba(0,0,0,.35); overflow:hidden; display:flex; flex-direction:column; }
         .modal-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid rgba(212,175,55,0.15); background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(244,208,63,0.08)); }
-        .modal-body { padding: 1rem 1.25rem; flex: 1 1 auto; overflow: hidden; }
+        .modal-body { padding: 1rem 1.25rem; flex: 1 1 auto; overflow: auto; }
         .close-btn { background: transparent; border:none; color: var(--ivory); font-size:1.25rem; cursor:pointer; }
 
         .event-item { border:1px solid rgba(212,175,55,0.15); border-radius:14px; padding:1rem; margin:.75rem 0; background: rgba(255,255,255,0.03); }
         .event-item h4 { margin-bottom:.25rem; font-size:1.1rem; }
         .event-meta { color: rgba(255,255,255,.7); font-size:.9rem; margin-bottom:.5rem; }
         .gold-btn { padding:.6rem 1rem; background: linear-gradient(135deg, var(--secondary), var(--gold-light)); border:none; border-radius:10px; color:#0b1220; font-weight:800; cursor:pointer; box-shadow:0 10px 25px rgba(212,175,55,.35); }
-        .event-content { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-height: 55vh; overflow: hidden; }
+        .event-content { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-height: 55vh; overflow: visible; }
         .event-col { overflow: auto; padding-right: .5rem; max-height: 55vh; -webkit-overflow-scrolling: touch; }
         .event-col::-webkit-scrollbar { width: 0; height: 0; }
         .event-col { scrollbar-width: none; -ms-overflow-style: none; }
@@ -76,12 +76,12 @@
         .samagri-list { padding-left: 1.1rem; }
         .samagri-list li { margin: .25rem 0; color: rgba(255,255,255,.9); }
         .event-indicator { display:flex; align-items:center; gap:.35rem; color: var(--secondary); font-weight:700; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        /* Hide modal body scrollbar as well for a cleaner look, while preserving scroll via wheel/touch */
-        .modal-body::-webkit-scrollbar { width: 0; height: 0; }
-        .modal-body { scrollbar-width: none; -ms-overflow-style: none; }
+        /* Allow modal body scrollbar so mobile users can scroll content */
+        .modal-body::-webkit-scrollbar { width: 8px; height: 8px; }
+        .modal-body { scrollbar-width: thin; -ms-overflow-style: auto; }
         @media (max-width: 768px) {
-            .event-content { grid-template-columns: 1fr; max-height: 50vh; }
-            .event-col { max-height: 50vh; }
+            .event-content { grid-template-columns: 1fr; max-height: 70vh; }
+            .event-col { max-height: 70vh; }
         }
 
         /* Enhanced slot selection UI */
@@ -413,14 +413,6 @@
                     <div class="event-meta"><i class="fas fa-clock"></i> ${e.start_time || ''}${e.end_time? ' - ' + e.end_time : ''} &nbsp; | &nbsp; <i class="fas fa-fire"></i> ${e.pooja_type}</div>
                     <div class="event-content">
                         <div class="event-col">
-                            <h5>Description</h5>
-                            ${e.description ? `<p style="color: rgba(255,255,255,.9)">${e.description}</p>`: '<p class="muted">No description available.</p>'}
-                            <div style="margin-top:.75rem;">
-                                <h5>Samagri</h5>
-                                ${e.samagri ? `<ul class="samagri-list">${(e.samagri||'').split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>` : '<p class="muted">Not specified.</p>'}
-                            </div>
-                        </div>
-                        <div class="event-col">
                             <h5>Choose Your Slot</h5>
                             <div class="muted" style="margin: .25rem 0 .5rem; font-size:.9rem;">All pooja times are listed in US Eastern Time zone (UTC-4) aligned with the Diwali Muhurat in India</div>
                             ${(e.slots && e.slots.length) ? `
@@ -434,6 +426,14 @@
                                     `).join('')}
                                 </div>
                             ` : '<p class="muted" style="margin-top:.5rem;">No slots configured for this event.</p>'}
+                        </div>
+                        <div class="event-col">
+                            <h5>Description</h5>
+                            ${e.description ? `<p style="color: rgba(255,255,255,.9)">${e.description}</p>`: '<p class="muted">No description available.</p>'}
+                            <div style="margin-top:.75rem;">
+                                <h5>Samagri</h5>
+                                ${e.samagri ? `<ul class="samagri-list">${(e.samagri||'').split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>` : '<p class="muted">Not specified.</p>'}
+                            </div>
                         </div>
                     </div>
                     <div style="display:flex; justify-content:flex-end; margin-top:.75rem;">

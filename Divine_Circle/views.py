@@ -136,7 +136,6 @@ def create_booking(request):
     message = (data.get("message") or "").strip()
     event_id = data.get("event_id")
     slot_id = data.get("slot_id")
-    slot_id = data.get("slot_id")
 
     if not name or not email:
         return JsonResponse({"error": "Name and email are required"}, status=400)
@@ -149,16 +148,15 @@ def create_booking(request):
         slot = get_object_or_404(PoojaSlot, pk=slot_id, is_active=True)
         if event and slot.event_id != event.id:
             return JsonResponse({"error": "Slot does not belong to selected event"}, status=400)
-        # Ensure slot has capacity
         if int(slot.booked_count) >= int(slot.capacity):
             return JsonResponse({"error": "Selected slot is fully booked"}, status=400)
+
+    # Optional slot validation if provided (single coherent block)
     slot = None
     if slot_id:
         slot = get_object_or_404(PoojaSlot, pk=slot_id, is_active=True)
-        # slot must belong to event if event provided
         if event and slot.event_id != event.id:
             return JsonResponse({"error": "Slot does not belong to selected event"}, status=400)
-        # check remaining
         if int(slot.booked_count) >= int(slot.capacity):
             return JsonResponse({"error": "Selected slot is fully booked"}, status=400)
 
@@ -184,11 +182,15 @@ def create_paypal_order(request):
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
 
+    # Ensure slot exists in scope regardless of later conditions
+    slot = None
+
     name = (data.get("name") or "").strip()
     email = (data.get("email") or "").strip()
     phone = (data.get("phone") or "").strip()
     message = (data.get("message") or "").strip()
     event_id = data.get("event_id")
+    slot_id = data.get("slot_id")
     requested_currency = (data.get("currency") or "USD").upper()
     BASE_USD_AMOUNT = 30.0
 
@@ -231,6 +233,15 @@ def create_paypal_order(request):
     event = None
     if event_id:
         event = get_object_or_404(PoojaEvent, pk=event_id)
+    
+    # Optional slot validation if provided
+    slot = None
+    if slot_id:
+        slot = get_object_or_404(PoojaSlot, pk=slot_id, is_active=True)
+        if event and slot.event_id != event.id:
+            return JsonResponse({"error": "Slot does not belong to selected event"}, status=400)
+        if int(slot.booked_count) >= int(slot.capacity):
+            return JsonResponse({"error": "Selected slot is fully booked"}, status=400)
 
     booking = PoojaBooking.objects.create(
         event=event,
