@@ -81,19 +81,19 @@ import os
 ON_RENDER = 'RENDER_EXTERNAL_URL' in os.environ
 
 if ON_RENDER:
-    # Use IPv4 Session Pooler for Render
+    # Session Pooler for Render (IPv4-compatible)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'postgres',
-            'USER': 'postgres',
+            'USER': 'postgres.mtqdmprkteqdbdrifbyo',
             'PASSWORD': 'rishiyo200512',
-            'HOST': 'db.mtqdmprkteqdbdrifbyo.pooler.supabase.com',
-            'PORT': '6544',
+            'HOST': 'aws-0-us-east-1.pooler.supabase.com',
+            'PORT': '5432',
         }
     }
 else:
-    # Local connection (works on your laptop)
+    # Local connection
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -104,6 +104,7 @@ else:
             'PORT': '5432',
         }
     }
+
 
 
 
