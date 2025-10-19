@@ -88,7 +88,7 @@ if ON_RENDER:
             'NAME': 'postgres',
             'USER': 'postgres.mtqdmprkteqdbdrifbyo',
             'PASSWORD': 'rishiyo200512',
-            'HOST': 'aws-0-us-east-1.pooler.supabase.com',
+            'HOST': 'aws-1-us-east-1.pooler.supabase.com',
             'PORT': '5432',
         }
     }
