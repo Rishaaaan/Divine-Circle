@@ -39,11 +39,8 @@ def landing(request):
 
 def bookings(request):
     return render(request, 'bookings.html', {
-        # Ensure the client id is always non-empty so PayPal SDK can render
-        "paypal_client_id": os.environ.get(
-            "PAYPAL_CLIENT_ID",
-            "AQy2n1awQMGefHOGImOwdNSrfVa4Rm515kimPo-EnpRYMQwDXbpq8hDpsoUMv8-JLx9Ym3nIF0evE8YA"
-        )
+        # Use LIVE client id from environment for SDK
+        "paypal_client_id": os.environ.get("PAYPAL_CLIENT_ID", "")
     })
 
 @require_http_methods(["GET"])
@@ -128,6 +125,10 @@ paypal_client = PaypalServersdkClient(
         ),
     ),
 )
+
+# Controllers derived from the initialized PayPal client
+orders_controller: OrdersController = paypal_client.orders
+payments_controller: PaymentsController = paypal_client.payments
 
 @csrf_exempt
 @require_http_methods(["POST"])
