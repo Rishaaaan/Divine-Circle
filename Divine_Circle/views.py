@@ -191,42 +191,18 @@ def create_paypal_order(request):
     message = (data.get("message") or "").strip()
     event_id = data.get("event_id")
     slot_id = data.get("slot_id")
-    requested_currency = (data.get("currency") or "USD").upper()
-    BASE_USD_AMOUNT = 30.0
+    # Force all bookings to 99.00 USD
+    requested_currency = "USD"
+    BASE_USD_AMOUNT = 99.0
 
     if not name or not email:
         return JsonResponse({"error": "Name and email are required"}, status=400)
 
-    # FX conversion similar to previous logic
-    if requested_currency != "USD":
-        try:
-            r = requests.get(
-                "https://api.exchangerate.host/convert",
-                params={"from": "USD", "to": requested_currency, "amount": BASE_USD_AMOUNT},
-                timeout=8,
-            )
-            if r.ok:
-                conv = r.json()
-                converted_amount = float(conv.get("result") or 0)
-            else:
-                converted_amount = 0
-        except Exception:
-            converted_amount = 0
-        if converted_amount <= 0:
-            if requested_currency == "INR":
-                converted_amount = BASE_USD_AMOUNT * 85.0
-            else:
-                converted_amount = BASE_USD_AMOUNT * 1.0
-    else:
-        converted_amount = BASE_USD_AMOUNT
+    # Always use USD 99.00
+    converted_amount = BASE_USD_AMOUNT
 
-    ZERO_DECIMAL = {"JPY", "KRW", "VND"}
-    if requested_currency in ZERO_DECIMAL:
-        amount_minor = int(round(converted_amount))
-        amount_value_str = str(amount_minor)
-    else:
-        amount_minor = int(round(converted_amount * 100))
-        amount_value_str = f"{converted_amount:.2f}"
+    amount_minor = int(round(converted_amount * 100))
+    amount_value_str = f"{converted_amount:.2f}"
 
     currency = requested_currency
 
@@ -257,6 +233,7 @@ def create_paypal_order(request):
 
     try:
         order = orders_controller.create_order({
+            "prefer": "return=representation",
             "body": OrderRequest(
                 intent=CheckoutPaymentIntent.CAPTURE,
                 purchase_units=[
