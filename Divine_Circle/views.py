@@ -17,6 +17,9 @@ from paypalserversdk.logging.configuration.api_logging_configuration import (
     RequestLoggingConfiguration,
     ResponseLoggingConfiguration,
 )
+from paypalserversdk.configuration import (
+    Environment,                        # <-- ADD THIS import
+)
 from paypalserversdk.paypal_serversdk_client import PaypalServersdkClient
 from paypalserversdk.controllers.orders_controller import OrdersController
 from paypalserversdk.controllers.payments_controller import PaymentsController
@@ -36,7 +39,11 @@ def landing(request):
 
 def bookings(request):
     return render(request, 'bookings.html', {
-        "paypal_client_id": os.environ.get("PAYPAL_CLIENT_ID", '')
+        # Ensure the client id is always non-empty so PayPal SDK can render
+        "paypal_client_id": os.environ.get(
+            "PAYPAL_CLIENT_ID",
+            "AQy2n1awQMGefHOGImOwdNSrfVa4Rm515kimPo-EnpRYMQwDXbpq8hDpsoUMv8-JLx9Ym3nIF0evE8YA"
+        )
     })
 
 @require_http_methods(["GET"])
@@ -101,26 +108,26 @@ def events_by_date(request, date):
         })
     return JsonResponse({"date": d.isoformat(), "events": events})
 
-# Initialize PayPal client
-paypal_client: PaypalServersdkClient = PaypalServersdkClient(
+# Initialize PayPal client properly
+paypal_client = PaypalServersdkClient(
     client_credentials_auth_credentials=ClientCredentialsAuthCredentials(
-        o_auth_client_id=os.getenv("PAYPAL_CLIENT_ID",""),
-        o_auth_client_secret=os.getenv("PAYPAL_CLIENT_SECRET",""),
+        o_auth_client_id=os.getenv("PAYPAL_CLIENT_ID", ""),
+        o_auth_client_secret=os.getenv("PAYPAL_CLIENT_SECRET", ""),
     ),
+    environment=Environment.PRODUCTION,  # <-- set environment here, not in credentials
     logging_configuration=LoggingConfiguration(
         log_level=logging.INFO,
         mask_sensitive_headers=True,
         request_logging_config=RequestLoggingConfiguration(
-            log_headers=True, log_body=False
+            log_headers=True,
+            log_body=False
         ),
         response_logging_config=ResponseLoggingConfiguration(
-            log_headers=True, log_body=False
+            log_headers=True,
+            log_body=False
         ),
     ),
 )
-
-orders_controller: OrdersController = paypal_client.orders
-payments_controller: PaymentsController = paypal_client.payments
 
 @csrf_exempt
 @require_http_methods(["POST"])

@@ -226,23 +226,6 @@
         </div>
     </div>
 
-    <!-- Diwali Confirmation Popup -->
-    <div class="diwali-backdrop" id="diwaliPopup">
-        <div class="diwali-modal">
-            <div class="diwali-header">
-                <div class="diya"><i class="fas fa-fire" style="color:#fff7e6;"></i></div>
-                <div class="diwali-title">Diwali Blessings</div>
-            </div>
-            <div class="diwali-body">
-                <h3>Your booking has been confirmed!</h3>
-                <p>Don’t worry if your payment didn’t go through — we’re offering free poojas to our customers this Diwali. We will send the online meeting link and all relevant details to your WhatsApp and email soon.</p>
-                <p style="margin-top:.5rem; font-style:italic; color: rgba(255,255,255,0.9);">May this Diwali bring light, faith, and good fortune your way.</p>
-            </div>
-            <div class="diwali-footer">
-                <button class="close-gold" onclick="closeDiwaliPopup()">Continue</button>
-            </div>
-        </div>
-    </div>
 
     <footer>
         <div class="footer-content">
@@ -275,7 +258,7 @@
         </div>
         <div style="text-align:center; color: rgba(255,255,255,.5);">&copy; 2025 Circle Divine. All rights reserved.</div>
     </footer>
-    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&intent=capture"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&components=buttons&currency=USD&intent=capture"></script>
     <script>
         // Utilities
         const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]; 
@@ -454,21 +437,11 @@
         }
         function closeBookingModal(){ bookingModal.style.display = 'none'; }
 
-        // Diwali popup controls
-        function openDiwaliPopup(){
-            const el = document.getElementById('diwaliPopup');
-            if (el) el.style.display = 'flex';
-        }
-        function closeDiwaliPopup(){
-            const el = document.getElementById('diwaliPopup');
-            if (el) el.style.display = 'none';
-        }
 
         // Booking submit with PayPal payment flow
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Show Diwali confirmation popup immediately upon clicking Confirm Booking
-            openDiwaliPopup();
+            // Proceed directly to create order; no popup
             const payload = {
                 event_id: document.getElementById('event_id').value || null,
                 name: document.getElementById('name').value,
