@@ -55,6 +55,11 @@
         .event-indicator i { filter: drop-shadow(0 0 8px rgba(212,175,55,.6)); }
         .highlight { outline: 2px solid rgba(212,175,55,0.5); box-shadow: inset 0 0 0 2px rgba(212,175,55,0.3); }
 
+        /* Calendar loading overlay */
+        .cal-loading { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(15,27,46,0.7); backdrop-filter: blur(2px); border-radius: 20px; z-index: 5; }
+        .spinner { width: 44px; height: 44px; border: 3px solid rgba(212,175,55,0.25); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 18px rgba(212,175,55,0.35); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* Modals */
         .modal-backdrop { position:fixed; inset:0; background: rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index: 2000; }
         .modal { width: min(95vw, 720px); max-height: 90vh; background: #0f1b2e; border:1px solid rgba(212,175,55,0.25); border-radius:18px; box-shadow: 0 25px 80px rgba(0,0,0,.35); overflow:hidden; display:flex; flex-direction:column; }
@@ -144,7 +149,8 @@
     </section>
 
     <section class="calendar-wrap">
-        <div class="cal-card">
+        <div class="cal-card" style="position:relative;">
+            <div class="cal-loading" id="calLoading"><div class="spinner"></div></div>
             <div class="cal-header">
                 <div class="cal-title">
                     <i class="fas fa-calendar-alt" style="color:var(--secondary);"></i>
@@ -186,7 +192,47 @@
             <div class="modal-body">
                 <form id="bookingForm">
                     <input type="hidden" id="event_id" name="event_id" />
+                    <input type="hidden" id="preferred_date" name="preferred_date" />
                     <div class="form-grid">
+                        <div>
+                            <label for="pooja_type">Pooja Type *</label>
+                            <select id="pooja_type" name="pooja_type" style="width:100%; padding:.8rem 1rem; border-radius:12px; border:2px solid rgba(255,255,255,0.08); background:#0b1220; color: var(--ivory);" required>
+                                <option value="">Select a pooja</option>
+                                <option>Naam Karan Ceremony</option>
+                                <option>Saraswati Pooja</option>
+                                <option>Griha Pravesh</option>
+                                <option>Business Opening Pooja</option>
+                                <option>Vehicle Pooja</option>
+                                <option>Festival Pooja</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div id="pooja_type_other_wrap" class="full" style="display:none;">
+                            <label for="pooja_type_other">Specify Pooja Type *</label>
+                            <input id="pooja_type_other" name="pooja_type_other" placeholder="Enter pooja type" />
+                        </div>
+                        <div>
+                            <label for="preferred_slot">Preferred Slot (1 hour)</label>
+                            <select id="preferred_slot" name="preferred_slot" style="width:100%; padding:.8rem 1rem; border-radius:12px; border:2px solid rgba(255,255,255,0.08); background:#0b1220; color: var(--ivory);">
+                                <option value="">Select a slot</option>
+                                <option>07:00 - 08:00</option>
+                                <option>08:00 - 09:00</option>
+                                <option>09:00 - 10:00</option>
+                                <option>10:00 - 11:00</option>
+                                <option>11:00 - 12:00</option>
+                                <option>12:00 - 13:00</option>
+                                <option>13:00 - 14:00</option>
+                                <option>14:00 - 15:00</option>
+                                <option>15:00 - 16:00</option>
+                                <option>16:00 - 17:00</option>
+                                <option>17:00 - 18:00</option>
+                                <option>18:00 - 19:00</option>
+                                <option>19:00 - 20:00</option>
+                                <option>20:00 - 21:00</option>
+                                <option>21:00 - 22:00</option>
+                                <option>22:00 - 23:00</option>
+                            </select>
+                        </div>
                         <div>
                             <label for="name">Full Name *</label>
                             <input id="name" name="name" required placeholder="Your full name" />
@@ -296,6 +342,7 @@
             eventsIndex = {};
             remainingMap = {};
             try {
+                document.getElementById('calLoading').style.display = 'flex';
                 const res = await fetch(`/api/events/?year=${year}&month=${month}`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
@@ -309,6 +356,8 @@
                 // Render calendar without events to avoid blank UI
                 eventsIndex = {};
                 remainingMap = {};
+            } finally {
+                document.getElementById('calLoading').style.display = 'none';
             }
         }
 
@@ -366,7 +415,16 @@
 
             // add click listeners
             calGrid.querySelectorAll('.day').forEach(btn => {
-                btn.addEventListener('click', () => openEventsModal(btn.dataset.date));
+                btn.addEventListener('click', () => {
+                    const dateStr = btn.dataset.date;
+                    const hasEv = !!eventsIndex[dateStr];
+                    if (hasEv) {
+                        openEventsModal(dateStr);
+                    } else {
+                        currentSelectedSlotId = null; // reset any prior event slot
+                        openBookingModal(null, dateStr, 'Custom Pooja Booking');
+                    }
+                });
             });
         }
 
@@ -411,6 +469,18 @@
                                         const picked = document.querySelector('input[name=slot_${e.id}]:checked');
                                         if(!picked){ alert('Please select a slot for this event first.'); return; }
                                         currentSelectedSlotId = picked.value; 
+                                        const label = picked.closest('.slot-card');
+                                        const time = label ? (label.querySelector('.slot-time')?.textContent || '').trim() : '';
+                                        const sel = document.getElementById('preferred_slot');
+                                        if (sel && time) {
+                                            const exists = Array.from(sel.options).some(o => o.value === time);
+                                            if (!exists) {
+                                                const opt = new Option(time, time, true, true);
+                                                sel.add(opt);
+                                            } else {
+                                                sel.value = time;
+                                            }
+                                        }
                                         openBookingModal(${e.id}, '${dateStr}', '${(e.title||'').replace(/'/g,"&apos;")}');
                                     })()">Book this pooja</button>
                                 </div>
@@ -431,23 +501,60 @@
         function closeEventsModal(){ eventsModal.style.display = 'none'; }
 
         function openBookingModal(eventId, dateStr, title){
-            document.getElementById('event_id').value = eventId;
+            document.getElementById('event_id').value = eventId || '';
+            document.getElementById('preferred_date').value = dateStr || '';
             document.getElementById('bookingModalTitle').textContent = `Book: ${title} (${dateStr})`;
+            // reset custom pooja type UI
+            const otherWrap = document.getElementById('pooja_type_other_wrap');
+            const otherInput = document.getElementById('pooja_type_other');
+            if (otherWrap && otherInput) {
+                otherWrap.style.display = 'none';
+                otherInput.value = '';
+            }
             bookingModal.style.display = 'flex';
         }
         function closeBookingModal(){ bookingModal.style.display = 'none'; }
 
 
         // Booking submit with PayPal payment flow
+        // Toggle custom pooja type input when 'Other' is selected
+        (function(){
+            const typeSel = document.getElementById('pooja_type');
+            const otherWrap = document.getElementById('pooja_type_other_wrap');
+            const otherInput = document.getElementById('pooja_type_other');
+            if (typeSel && otherWrap && otherInput) {
+                typeSel.addEventListener('change', () => {
+                    if (typeSel.value === 'Other') {
+                        otherWrap.style.display = 'block';
+                        otherInput.focus();
+                    } else {
+                        otherWrap.style.display = 'none';
+                        otherInput.value = '';
+                    }
+                });
+            }
+        })();
+
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             // Proceed directly to create order; no popup
+            const typeSel = document.getElementById('pooja_type');
+            const otherInput = document.getElementById('pooja_type_other');
+            let poojaTypeVal = typeSel ? typeSel.value : '';
+            if (poojaTypeVal === 'Other') {
+                const custom = (otherInput?.value || '').trim();
+                if (!custom) { alert('Please specify the pooja type.'); return; }
+                poojaTypeVal = custom;
+            }
             const payload = {
                 event_id: document.getElementById('event_id').value || null,
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
-                currency: (document.getElementById('currency')?.value || 'USD')
+                currency: (document.getElementById('currency')?.value || 'USD'),
+                preferred_date: document.getElementById('preferred_date').value || null,
+                preferred_slot: document.getElementById('preferred_slot')?.value || '',
+                pooja_type: poojaTypeVal || ''
                 // amount_paise: 50000, // optional; backend defaults if not provided
                 // currency: 'INR'
             };

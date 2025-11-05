@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
+from django.core.mail import send_mail
+from django.conf import settings
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.dateparse import parse_date
@@ -144,6 +146,12 @@ def create_booking(request):
     message = (data.get("message") or "").strip()
     event_id = data.get("event_id")
     slot_id = data.get("slot_id")
+    preferred_date = (data.get("preferred_date") or "").strip() or None
+    preferred_slot = (data.get("preferred_slot") or "").strip()
+    pooja_type = (data.get("pooja_type") or "").strip()
+    preferred_date = (data.get("preferred_date") or "").strip() or None
+    preferred_slot = (data.get("preferred_slot") or "").strip()
+    pooja_type = (data.get("pooja_type") or "").strip()
 
     if not name or not email:
         return JsonResponse({"error": "Name and email are required"}, status=400)
@@ -170,6 +178,10 @@ def create_booking(request):
 
     booking = PoojaBooking.objects.create(
         event=event,
+        slot=slot,
+        preferred_date=preferred_date,
+        preferred_slot=preferred_slot,
+        pooja_type=pooja_type,
         name=name,
         email=email,
         phone=phone,
@@ -218,6 +230,11 @@ def create_paypal_order(request):
     if event_id:
         event = get_object_or_404(PoojaEvent, pk=event_id)
     
+    # Extract optional custom booking fields
+    preferred_date = (data.get("preferred_date") or "").strip() or None
+    preferred_slot = (data.get("preferred_slot") or "").strip()
+    pooja_type = (data.get("pooja_type") or "").strip()
+
     # Optional slot validation if provided
     slot = None
     if slot_id:
@@ -230,6 +247,9 @@ def create_paypal_order(request):
     booking = PoojaBooking.objects.create(
         event=event,
         slot=slot,
+        preferred_date=preferred_date,
+        preferred_slot=preferred_slot,
+        pooja_type=pooja_type,
         name=name,
         email=email,
         phone=phone,
@@ -331,5 +351,25 @@ def capture_paypal_order(request):
             pass
     booking.payment_status = "yes"
     booking.save(update_fields=["payment_status"])
+
+    # Send email notification on successful booking
+    try:
+        subject = "New Pooja Booking Confirmed"
+        body_lines = [
+            f"Name: {booking.name}",
+            f"Email: {booking.email}",
+            f"Phone: {booking.phone}",
+            f"Pooja Type: {booking.pooja_type or (booking.event.pooja_type if booking.event else '')}",
+            f"Preferred Date: {booking.preferred_date or (booking.event.date if booking.event else '')}",
+            f"Preferred Slot: {booking.preferred_slot or (booking.slot.start_time if booking.slot else '')}",
+            f"Payment Status: {booking.payment_status}",
+            f"Booking ID: {booking.id}",
+        ]
+        body = "\n".join(["A new booking has been completed:"] + body_lines)
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@circledivine.com')
+        send_mail(subject, body, from_email, ["rishangupta857@gmail.com"], fail_silently=True)
+    except Exception:
+        # Do not fail the capture if email sending fails
+        pass
 
     return JsonResponse({"status": "success", "payment_status": booking.payment_status})

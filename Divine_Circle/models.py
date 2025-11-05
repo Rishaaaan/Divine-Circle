@@ -44,6 +44,9 @@ class PoojaSlot(models.Model):
 class PoojaBooking(models.Model):
     event = models.ForeignKey(PoojaEvent, on_delete=models.SET_NULL, null=True, blank=True, related_name="bookings")
     slot = models.ForeignKey(PoojaSlot, on_delete=models.SET_NULL, null=True, blank=True, related_name="bookings")
+    preferred_date = models.DateField(null=True, blank=True)
+    preferred_slot = models.CharField(max_length=20, blank=True)
+    pooja_type = models.CharField(max_length=100, blank=True)
     name = models.CharField(max_length=120)
     email = models.EmailField()
     phone = models.CharField(max_length=30, blank=True)
