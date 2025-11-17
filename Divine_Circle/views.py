@@ -213,7 +213,7 @@ def create_paypal_order(request):
     slot_id = data.get("slot_id")
     # Force all bookings to 99.00 USD
     requested_currency = "USD"
-    BASE_USD_AMOUNT = 99.0
+    BASE_USD_AMOUNT = 1.0
 
     if not name or not email:
         return JsonResponse({"error": "Name and email are required"}, status=400)
